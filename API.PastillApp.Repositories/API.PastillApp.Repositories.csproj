@@ -15,4 +15,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\API.PastillApp.Domain\API.PastillApp.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
