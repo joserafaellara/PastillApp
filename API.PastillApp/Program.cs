@@ -24,6 +24,8 @@ builder.Services.AddDbContext<PastillAppContext>(options =>
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAlertLogRepository, AlertLogRepository>();
+builder.Services.AddScoped<IReminderRepository, ReminderRepository>();
 
 #region SERVICES
 

@@ -1,4 +1,5 @@
 ﻿using API.PastillApp.Domain.Entities;
+using API.PastillApp.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace API.PastillApp.Repositories
 {
-    internal class AlertLogRepository
+    public class AlertLogRepository : IAlertLogRepository
     {
         private readonly PastillAppContext _context;
 
