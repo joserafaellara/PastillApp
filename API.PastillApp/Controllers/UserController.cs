@@ -1,4 +1,5 @@
-﻿using API.PastillApp.Services.Interfaces;
+﻿using API.PastillApp.Services.DTOs;
+using API.PastillApp.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -19,6 +20,13 @@ namespace API.PastillApp.Controllers
         {
             var result = await _userService.GetUser(userId);
             return Ok(result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateUser(CreateUserDTO createUserDTO)
+        {
+            var result = await _userService.CreateUser(createUserDTO);
+            return result.isSuccess ? Ok() : BadRequest(result);
         }
     }
 }

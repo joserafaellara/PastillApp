@@ -1,4 +1,5 @@
 ﻿using API.PastillApp.Domain.Entities;
+using API.PastillApp.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace API.PastillApp.Repositories
 {
-    internal class UserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly PastillAppContext _context;
 
-        public UserRepository(PastillAppContext context)
+        public UserRepository(PastillAppContext context) 
         {
             _context = context;
         }
