@@ -1,4 +1,5 @@
 ﻿using API.PastillApp.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,12 +18,12 @@ namespace API.PastillApp.Repositories
         }
 
         // CREATE (Agregar un nuevo usuario)
-        public void AddUser(User user)
+        public async Task AddUser(User user)
         {
             try
             {
                 _context.Users.Add(user);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -32,11 +33,11 @@ namespace API.PastillApp.Repositories
         }
 
         // READ (Obtener un usuario por ID)
-        public User GetUserById(int userId)
+        public async Task<User> GetUserById(int userId)
         {
             try
             {
-                return _context.Users.FirstOrDefault(u => u.UserId == userId);
+                return await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
             }
             catch (Exception ex)
             {
@@ -46,11 +47,11 @@ namespace API.PastillApp.Repositories
         }
 
         // READ (Obtener un usuario por email)
-        public User GetUserByEmail(string email)
+        public async Task<User> GetUserByEmail(string email)
         {
             try
             {
-                return _context.Users.FirstOrDefault(u => u.Email == email);
+                return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
             }
             catch (Exception ex)
             {
@@ -60,11 +61,11 @@ namespace API.PastillApp.Repositories
         }
 
         // READ (Obtener todos los usuarios)
-        public List<User> GetAllUsers()
+        public async Task<List<User>> GetAllUsers()
         {
             try
             {
-                return _context.Users.ToList();
+                return await _context.Users.ToListAsync();
             }
             catch (Exception ex)
             {
@@ -74,12 +75,12 @@ namespace API.PastillApp.Repositories
         }
 
         // UPDATE (Actualizar un usuario)
-        public void UpdateUser(User user)
+        public async Task UpdateUser(User user)
         {
             try
             {
-                _context.Users.Update(user);
-                _context.SaveChanges();
+                 _context.Users.Update(user);
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -89,7 +90,7 @@ namespace API.PastillApp.Repositories
         }
 
         // DELETE (Eliminar un usuario)
-        public void DeleteUser(int userId)
+        public async Task DeleteUser(int userId)
         {
             try
             {
@@ -97,7 +98,7 @@ namespace API.PastillApp.Repositories
                 if (user != null)
                 {
                     _context.Users.Remove(user);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
             }
             catch (Exception ex)

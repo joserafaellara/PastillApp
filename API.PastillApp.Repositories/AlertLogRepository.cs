@@ -1,4 +1,5 @@
 ﻿using API.PastillApp.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,12 +18,12 @@ namespace API.PastillApp.Repositories
         }
 
         // CREATE (Add a new Alert Log)
-        public void AddAlertLog(AlertLog alertLog)
+        public async Task AddAlertLog(AlertLog alertLog)
         {
             try
             {
                 _context.AlertLogs.Add(alertLog);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -32,11 +33,11 @@ namespace API.PastillApp.Repositories
         }
 
         // READ (Get an alert log by ID)
-        public AlertLog GetAlertLogById(int alertLogId)
+        public async Task<AlertLog> GetAlertLogById(int alertLogId)
         {
             try
             {
-                return _context.AlertLogs.FirstOrDefault(r => r.AlertLogId == alertLogId);
+                return await _context.AlertLogs.FirstOrDefaultAsync(r => r.AlertLogId == alertLogId);
             }
             catch (Exception ex)
             {
@@ -46,11 +47,11 @@ namespace API.PastillApp.Repositories
         }
 
         // READ (Get an Alert log by Reminder Log Id)
-        public AlertLog GetAlertLogByReminderLogId(int reminderLogId)
+        public async Task<AlertLog> GetAlertLogByReminderLogId(int reminderLogId)
         {
             try
             {
-                return _context.AlertLogs.FirstOrDefault(r => r.ReminderLogId == reminderLogId);
+                return await _context.AlertLogs.FirstOrDefaultAsync(r => r.ReminderLogId == reminderLogId);
             }
             catch (Exception ex)
             {
@@ -60,11 +61,11 @@ namespace API.PastillApp.Repositories
         }
 
         // READ (Get an Alert log by EmergencyUser ID)
-        public AlertLog GetAlertLogByEmergencyUserId(int EmergencyUserId)
+        public async Task<AlertLog> GetAlertLogByEmergencyUserId(int EmergencyUserId)
         {
             try
             {
-                return _context.AlertLogs.FirstOrDefault(r => r.EmergencyUserId == EmergencyUserId);
+                return await _context.AlertLogs.FirstOrDefaultAsync(r => r.EmergencyUserId == EmergencyUserId);
             }
             catch (Exception ex)
             {
@@ -74,11 +75,11 @@ namespace API.PastillApp.Repositories
         }
 
         // READ (Get all the Alert logs)
-        public List<AlertLog> GetAllAlertLogs()
+        public async Task<List<AlertLog>> GetAllAlertLogs()
         {
             try
             {
-                return _context.AlertLogs.ToList();
+                return await _context.AlertLogs.ToListAsync();
             }
             catch (Exception ex)
             {
@@ -88,12 +89,12 @@ namespace API.PastillApp.Repositories
         }
 
         // UPDATE (Update an alert log)
-        public void UpdateAlertLog(AlertLog alertLog)
+        public async Task UpdateAlertLog(AlertLog alertLog)
         {
             try
             {
                 _context.AlertLogs.Update(alertLog);
-                _context.SaveChanges();
+                 await  _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -103,7 +104,7 @@ namespace API.PastillApp.Repositories
         }
 
         // DELETE (Delet an alert log by ID)
-        public void DeleteAlertLog(int alertLogId)
+        public async Task DeleteAlertLog(int alertLogId)
         {
             try
             {
@@ -111,7 +112,7 @@ namespace API.PastillApp.Repositories
                 if (alertLog != null)
                 {
                     _context.AlertLogs.Remove(alertLog);
-                    _context.SaveChanges();
+                   await _context.SaveChangesAsync();
                 }
             }
             catch (Exception ex)

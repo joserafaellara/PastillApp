@@ -1,4 +1,5 @@
 ﻿using API.PastillApp.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,12 +18,12 @@ namespace API.PastillApp.Repositories
         }
 
         // CREATE (Adding a new Daily Status)
-        public void AddDailyStatus(DailyStatus dailyStatus)
+        public async Task AddDailyStatus(DailyStatus dailyStatus)
         {
             try
             {
                 _context.DailyStatuses.Add(dailyStatus);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -32,11 +33,11 @@ namespace API.PastillApp.Repositories
         }
 
         // READ (Obtaining a daily status by it's ID)
-        public DailyStatus GetDailyStatusById(int dailyStatusId)
+        public async Task <DailyStatus> GetDailyStatusById(int dailyStatusId)
         {
             try
             {
-                return _context.DailyStatuses.FirstOrDefault(u => u.DailyStatusID == dailyStatusId);
+                return await _context.DailyStatuses.FirstOrDefaultAsync(u => u.DailyStatusID == dailyStatusId);
             }
             catch (Exception ex)
             {
@@ -46,11 +47,11 @@ namespace API.PastillApp.Repositories
         }
 
         // READ (Obtain all daily statuses)
-        public List<DailyStatus> GetAllDailyStatus()
+        public async Task<List<DailyStatus>> GetAllDailyStatus()
         {
             try
             {
-                return _context.DailyStatuses.ToList();
+                return await _context.DailyStatuses.ToListAsync();
             }
             catch (Exception ex)
             {
@@ -60,12 +61,12 @@ namespace API.PastillApp.Repositories
         }
 
         // UPDATE (Update a daily status)
-        public void UpdateDailyStatus(DailyStatus dailyStatus)
+        public async Task UpdateDailyStatus(DailyStatus dailyStatus)
         {
             try
             {
                 _context.DailyStatuses.Update(dailyStatus);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -75,7 +76,7 @@ namespace API.PastillApp.Repositories
         }
 
         // DELETE (Delete a daily status)
-        public void DeleteDailyStatus(int dailyStatusId)
+        public async Task DeleteDailyStatus(int dailyStatusId)
         {
             try
             {
@@ -83,7 +84,7 @@ namespace API.PastillApp.Repositories
                 if (dailyStatus != null)
                 {
                     _context.DailyStatuses.Remove(dailyStatus);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
             }
             catch (Exception ex)
