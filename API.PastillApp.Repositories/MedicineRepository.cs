@@ -1,4 +1,5 @@
 ﻿using API.PastillApp.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,12 +18,12 @@ namespace API.PastillApp.Repositories
         }
 
         // CREATE (Add new medicine)
-        public void AddMedicine(Medicine medicine)
+        public async Task AddMedicine(Medicine medicine)
         {
             try
             {
                 _context.Medicines.Add(medicine);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -32,11 +33,11 @@ namespace API.PastillApp.Repositories
         }
 
         // READ (Get medicine by ID)
-        public Medicine GetMedicineById(int medicineId)
+        public async Task<Medicine> GetMedicineById(int medicineId)
         {
             try
             {
-                return _context.Medicines.FirstOrDefault(m => m.MedicineId == medicineId);
+                return await _context.Medicines.FirstOrDefaultAsync(m => m.MedicineId == medicineId);
             }
             catch (Exception ex)
             {
@@ -46,11 +47,11 @@ namespace API.PastillApp.Repositories
         }
 
         // READ (Get all medicines)
-        public List<Medicine> GetAllMedicines()
+        public async Task<List<Medicine>> GetAllMedicines()
         {
             try
             {
-                return _context.Medicines.ToList();
+                return await _context.Medicines.ToListAsync();
             }
             catch (Exception ex)
             {
@@ -60,12 +61,12 @@ namespace API.PastillApp.Repositories
         }
 
         // UPDATE (Update a medicine)
-        public void UpdateMedicine(Medicine medicine)
+        public async Task UpdateMedicine(Medicine medicine)
         {
             try
             {
                 _context.Medicines.Update(medicine);
-                _context.SaveChanges();
+               await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -75,7 +76,7 @@ namespace API.PastillApp.Repositories
         }
 
         // DELETE (Delete a medicine)
-        public void DeleteMedicine(int medicineId)
+        public async Task DeleteMedicine(int medicineId)
         {
             try
             {
@@ -83,7 +84,7 @@ namespace API.PastillApp.Repositories
                 if (medicine != null)
                 {
                     _context.Medicines.Remove(medicine);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
             }
             catch (Exception ex)

@@ -1,4 +1,5 @@
 ﻿using API.PastillApp.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,12 +19,12 @@ namespace API.PastillApp.Repositories
         }
 
         // CREATE (Add a new Reminder)
-        public void AddReminder(Reminder reminder)
+        public async Task AddReminder(Reminder reminder)
         {
             try
             {
                 _context.Reminders.Add(reminder);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -33,11 +34,11 @@ namespace API.PastillApp.Repositories
         }
 
         // READ (Get a reminder by ID)
-        public Reminder GetReminderById(int reminderId)
+        public async Task<Reminder> GetReminderById(int reminderId)
         {
             try
             {
-                return _context.Reminders.FirstOrDefault(r => r.ReminderId == reminderId);
+                return await _context.Reminders.FirstOrDefaultAsync(r => r.ReminderId == reminderId);
             }
             catch (Exception ex)
             {
@@ -47,11 +48,11 @@ namespace API.PastillApp.Repositories
         }
 
         // READ (Get a reminder by Medicine ID.)
-        public Reminder GetReminderByMedicineId(int medicineId)
+        public async Task<Reminder> GetReminderByMedicineId(int medicineId)
         {
             try
             {
-                return _context.Reminders.FirstOrDefault(r => r.MedicineId == medicineId);
+                return await _context.Reminders.FirstOrDefaultAsync(r => r.MedicineId == medicineId);
             }
             catch (Exception ex)
             {
@@ -61,11 +62,11 @@ namespace API.PastillApp.Repositories
         }
 
         // READ (Get a reminder by User ID.)
-        public Reminder GetReminderByUserId(int userId)
+        public async Task<Reminder> GetReminderByUserId(int userId)
         {
             try
             {
-                return _context.Reminders.FirstOrDefault(r => r.UserId == userId );
+                return await _context.Reminders.FirstOrDefaultAsync(r => r.UserId == userId );
             }
             catch (Exception ex)
             {
@@ -75,11 +76,11 @@ namespace API.PastillApp.Repositories
         }
 
         // READ (get all the reminders)
-        public List<Reminder> GetAllReminder()
+        public async Task<List<Reminder>> GetAllReminder()
         {
             try
             {
-                return _context.Reminders.ToList();
+                return await _context.Reminders.ToListAsync();
             }
             catch (Exception ex)
             {
@@ -89,12 +90,12 @@ namespace API.PastillApp.Repositories
         }
 
         // UPDATE (Update a Reminder)
-        public void UpdateReminder(Reminder reminder)
+        public async Task UpdateReminder(Reminder reminder)
         {
             try
             {
                 _context.Reminders.Update(reminder);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -104,7 +105,7 @@ namespace API.PastillApp.Repositories
         }
 
         // DELETE (Delete a reminder by ID)
-        public void DeleteReminder(int reminderId)
+        public async Task DeleteReminder(int reminderId)
         {
             try
             {
@@ -112,7 +113,7 @@ namespace API.PastillApp.Repositories
                 if (reminder != null)
                 {
                     _context.Reminders.Remove(reminder);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
             }
             catch (Exception ex)

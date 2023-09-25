@@ -1,4 +1,5 @@
 ﻿using API.PastillApp.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,12 +18,12 @@ namespace API.PastillApp.Repositories
         }
 
         // CREATE (Add a new Reminder Log)
-        public void AddReminderLog(ReminderLog reminderLog)
+        public async Task AddReminderLog(ReminderLog reminderLog)
         {
             try
             {
                 _context.ReminderLogs.Add(reminderLog);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -32,11 +33,11 @@ namespace API.PastillApp.Repositories
         }
 
         // READ (Get a Reminder Log by ID.)
-        public ReminderLog GetReminderLogById(int reminderLogId)
+        public async Task<ReminderLog> GetReminderLogById(int reminderLogId)
         {
             try
             {
-                return _context.ReminderLogs.FirstOrDefault(r => r.ReminderLogId == reminderLogId);
+                return await _context.ReminderLogs.FirstOrDefaultAsync(r => r.ReminderLogId == reminderLogId);
             }
             catch (Exception ex)
             {
@@ -46,11 +47,11 @@ namespace API.PastillApp.Repositories
         }
 
         // READ (Get a Reminder Log by a reminder Id)
-        public ReminderLog GetReminderByReminderId(int reminderId)
+        public async Task<ReminderLog> GetReminderByReminderId(int reminderId)
         {
             try
             {
-                return _context.ReminderLogs.FirstOrDefault(r => r.ReminderId == reminderId);
+                return await _context.ReminderLogs.FirstOrDefaultAsync(r => r.ReminderId == reminderId);
             }
             catch (Exception ex)
             {
@@ -60,11 +61,11 @@ namespace API.PastillApp.Repositories
         }
 
         // READ (Get all the Reminder Logs)
-        public List<ReminderLog> GetAllReminderLogs()
+        public async Task<List<ReminderLog>> GetAllReminderLogs()
         {
             try
             {
-                return _context.ReminderLogs.ToList();
+                return await _context.ReminderLogs.ToListAsync();
             }
             catch (Exception ex)
             {
@@ -74,12 +75,12 @@ namespace API.PastillApp.Repositories
         }
 
         // UPDATE (Update a Reminder Log)
-        public void UpdateReminderLog(ReminderLog reminderLog)
+        public async Task UpdateReminderLog(ReminderLog reminderLog)
         {
             try
             {
                 _context.ReminderLogs.Update(reminderLog);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -89,7 +90,7 @@ namespace API.PastillApp.Repositories
         }
 
         // DELETE (Delete a Reminder Log)
-        public void DeleteReminderLog(int reminderLogId)
+        public async Task DeleteReminderLog(int reminderLogId)
         {
             try
             {
@@ -97,7 +98,7 @@ namespace API.PastillApp.Repositories
                 if (reminderLog != null)
                 {
                     _context.ReminderLogs.Remove(reminderLog);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
             }
             catch (Exception ex)
