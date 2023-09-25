@@ -1,4 +1,8 @@
 using API.PastillApp.Repositories;
+using API.PastillApp.Repositories.Interface;
+using API.PastillApp.Services.Interfaces;
+using API.PastillApp.Services.Mapper;
+using API.PastillApp.Services.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +20,18 @@ builder.Services.AddDbContext<PastillAppContext>(options =>
     //options.UseInMemoryDatabase("PastillAppDB");
 }
     );
+
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+#region SERVICES
+
+builder.Services
+    .AddTransient<IUserService, UserService>();
+    
+
+#endregion
 
 var app = builder.Build();
 

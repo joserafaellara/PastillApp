@@ -26,14 +26,10 @@ namespace API.PastillApp.Domain.Entities
         [MaxLength(100)]
         public string? Email { get; set; }
 
-        [Required]
-        [MaxLength(15)]
-        public string? Phone { get; set; }
-
         [ForeignKey("EmergencyUserId")]
         public int? EmergencyUserId { get; set; }
         
-        public virtual User? EmergencyContact { get; set; }
+        public virtual User? EmergencyUser { get; set; }
 
     }
 }

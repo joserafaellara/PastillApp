@@ -7,7 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\" />
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\API.PastillApp.Domain\API.PastillApp.Domain.csproj" />
+    <ProjectReference Include="..\API.PastillApp.Repositories\API.PastillApp.Repositories.csproj" />
   </ItemGroup>
 
 </Project>
