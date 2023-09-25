@@ -26,6 +26,8 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAlertLogRepository, AlertLogRepository>();
 builder.Services.AddScoped<IReminderRepository, ReminderRepository>();
+builder.Services.AddScoped<IDailyStatusRepository, DailyStatusRepository>();
+
 
 #region SERVICES
 

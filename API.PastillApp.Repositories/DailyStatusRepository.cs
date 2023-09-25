@@ -1,4 +1,5 @@
 ﻿using API.PastillApp.Domain.Entities;
+using API.PastillApp.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace API.PastillApp.Repositories
 {
-    internal class DailyStatusRepository
+    public class DailyStatusRepository : IDailyStatusRepository
     {
         private readonly PastillAppContext _context;
 
@@ -94,5 +95,32 @@ namespace API.PastillApp.Repositories
             }
         }
 
+        // GET (Get all daily status by user ID)
+        public async Task<List<DailyStatus>> GetDailyStatusByUserId(int userId)
+        {
+            try
+            {
+                return await _context.DailyStatuses.Where(d => d.UserId == userId).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al obtener los estados diarios por UserId: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<List<DailyStatus>> GetAllDailyStatuses()
+        {
+            try
+            {
+                var dailyStatuses = await _context.DailyStatuses.ToListAsync();
+                return dailyStatuses;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al obtener todos los estados diarios: {ex.Message}");
+                throw;
+            }
+        }
     }
 }
