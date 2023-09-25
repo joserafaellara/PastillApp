@@ -1,4 +1,5 @@
 ﻿using API.PastillApp.Domain.Entities;
+using API.PastillApp.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace API.PastillApp.Repositories
 {
-    internal class  ReminderRepository
+    public class  ReminderRepository : IReminderRepository
     {
         private readonly PastillAppContext _context;
 
@@ -76,7 +77,7 @@ namespace API.PastillApp.Repositories
         }
 
         // READ (get all the reminders)
-        public async Task<List<Reminder>> GetAllReminder()
+        public async Task<List<Reminder>> GetAllReminders()
         {
             try
             {
