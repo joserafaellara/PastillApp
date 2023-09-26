@@ -18,6 +18,13 @@ namespace API.PastillApp.Services.Mapper
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.Lastname))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
 
+
+            CreateMap<CreateDailyStatusDTO, DailyStatus>()
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.Observation, opt => opt.MapFrom(src => src.Observation))
+                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date))
+                .ForMember(dest => dest.Symptoms, opt => opt.MapFrom(src => src.Symptoms));
+
         }
     }
 }

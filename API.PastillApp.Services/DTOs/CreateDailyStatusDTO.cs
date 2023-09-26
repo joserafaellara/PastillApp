@@ -14,6 +14,7 @@ namespace API.PastillApp.Services.DTOs
 
         [Required(ErrorMessage = "El campo 'Date' es obligatorio.")]
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
 
         [MaxLength(500, ErrorMessage = "La longitud máxima de 'Symptoms' es de 500 caracteres.")]
