@@ -18,6 +18,12 @@ namespace API.PastillApp.Services.Mapper
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.Lastname))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
 
+
+            CreateMap<CreateMedicineDTO, Medicine>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Dosage, opt => opt.MapFrom(src => src.Dosage))
+                .ForMember(dest => dest.Presentation, opt => opt.MapFrom(src => src.Presentation));
+
         }
     }
 }
