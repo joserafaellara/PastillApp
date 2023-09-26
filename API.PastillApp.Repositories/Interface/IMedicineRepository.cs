@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace API.PastillApp.Repositories.Interface
 {
-    public interface IMedicineRepository
+    public interface IMedicineRepository 
     {
         Task AddMedicine(Medicine medicine);
 
@@ -16,7 +16,7 @@ namespace API.PastillApp.Repositories.Interface
         Task<Medicine> GetMedicineById(int medicineId);
 
         // READ
-        Task<Medicine> GetMedicineByName(string name);
+        Task<List<Medicine>> GetMedicineByName(string name);
 
         // READ 
         Task<List<Medicine>> GetAllMedicines();

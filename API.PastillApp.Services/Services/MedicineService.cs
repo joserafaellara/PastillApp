@@ -54,8 +54,8 @@ namespace API.PastillApp.Services.Services
 
         public async Task<List<Medicine>> GetAllMedicines()
         {
-            var user = await _medicineRepository.GetAllMedicines();
-            return user;
+            var medicines = await _medicineRepository.GetAllMedicines();
+            return medicines;
         }
 
         public async Task<Medicine> GetMedicine(int medicineId)
@@ -64,9 +64,12 @@ namespace API.PastillApp.Services.Services
             return medicine;
         }
 
-        public Task<Medicine> GetMedicineByName(string name)
+        public async Task<List<Medicine>> GetMedicineByName(string name)
         {
-            throw new NotImplementedException();
+            string lowercaseName = name.ToLower();
+            var medicines = await _medicineRepository.GetMedicineByName(lowercaseName);
+            return medicines;
+            
         }
 
         public Task<ResponseDTO> UpdateMedicine(Medicine medicine)

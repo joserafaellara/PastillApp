@@ -7,7 +7,7 @@ namespace API.PastillApp.Services.Interfaces
     public interface IMedicineService
     {
         Task<Medicine> GetMedicine(int medicineId);
-        Task<Medicine> GetMedicineByName(string name);
+        Task<List<Medicine>> GetMedicineByName(string name);
         Task<List<Medicine>> GetAllMedicines();
         Task<ResponseDTO> CreateMedicine(CreateMedicineDTO medicine);
         Task<ResponseDTO> UpdateMedicine(Medicine medicine);

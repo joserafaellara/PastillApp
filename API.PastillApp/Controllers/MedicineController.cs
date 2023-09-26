@@ -2,6 +2,7 @@
 using API.PastillApp.Services.DTOs;
 using API.PastillApp.Services.Interfaces;
 using Microsoft.EntityFrameworkCore.Metadata;
+using API.PastillApp.Domain.Entities;
 
 namespace API.PastillApp.Controllers
 {
@@ -16,6 +17,7 @@ namespace API.PastillApp.Controllers
         }
 
         [HttpGet("{medicineId}")]
+        [ProducesResponseType(typeof(Medicine), 200)]
         public async Task<IActionResult> GetMedicine(int medicineId)
         {
             var result = await _medicineService.GetMedicine(medicineId);
