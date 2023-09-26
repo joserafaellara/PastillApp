@@ -15,7 +15,7 @@ namespace API.PastillApp.Controllers
             _reminderService = reminderService;
         }
 
-        [HttpGet("{userId}")]
+        [HttpGet("{reminderId}")]
         public async Task<IActionResult> GetReminder(int reminderId)
         {
             var result = await _reminderService.GetReminder(reminderId);

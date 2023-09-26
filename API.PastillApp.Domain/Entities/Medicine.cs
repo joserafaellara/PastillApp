@@ -13,6 +13,10 @@ namespace API.PastillApp.Domain.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int MedicineId { get; set; }
+
+        [Required]
+        public string? Name { get; set; }
+
         [Required]
         public int Dosage {  get; set; }
         [Required]
