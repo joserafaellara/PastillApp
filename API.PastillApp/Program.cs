@@ -25,14 +25,16 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAlertLogRepository, AlertLogRepository>();
-builder.Services.AddScoped<IReminderRepository, ReminderRepository>();
+//builder.Services.AddScoped<IReminderRepository, ReminderRepository>();
+builder.Services.AddScoped<IDailyStatusRepository, DailyStatusRepository>();
+
 
 #region SERVICES
 
 builder.Services
-    .AddTransient<IUserService, UserService>();
-    
-
+    .AddTransient<IUserService, UserService>()
+    .AddTransient<IAlertLogService, AlertLogService>()
+    .AddTransient<IDailyStatusService, DailyStatusService>();
 #endregion
 
 var app = builder.Build();
