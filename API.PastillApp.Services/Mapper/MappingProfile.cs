@@ -11,7 +11,8 @@ namespace API.PastillApp.Services.Mapper
 {
     public class MappingProfile : Profile
     {
-        public MappingProfile() {
+        public MappingProfile()
+        {
 
             CreateMap<CreateUserDTO, User>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
