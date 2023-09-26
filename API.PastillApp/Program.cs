@@ -25,15 +25,17 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAlertLogRepository, AlertLogRepository>();
-//builder.Services.AddScoped<IReminderRepository, ReminderRepository>();
+builder.Services.AddScoped<IReminderRepository, ReminderRepository>();
 builder.Services.AddScoped<IDailyStatusRepository, DailyStatusRepository>();
-
+builder.Services.AddScoped<IMedicineRepository, MedicineRepository>();
 
 #region SERVICES
 
 builder.Services
     .AddTransient<IUserService, UserService>()
     .AddTransient<IAlertLogService, AlertLogService>()
+    .AddTransient<IReminderService, ReminderService>()
+    .AddTransient<IMedicineService, MedicineService>()
     .AddTransient<IDailyStatusService, DailyStatusService>();
 #endregion
 
