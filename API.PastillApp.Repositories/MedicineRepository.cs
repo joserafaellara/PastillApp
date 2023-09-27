@@ -1,11 +1,6 @@
 ﻿using API.PastillApp.Domain.Entities;
 using API.PastillApp.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace API.PastillApp.Repositories
 {
@@ -84,9 +79,17 @@ namespace API.PastillApp.Repositories
                 var medicine = _context.Medicines.FirstOrDefault(m => m.MedicineId == medicineId);
                 if (medicine != null)
                 {
+                    var remindersToDelete = _context.Reminders.Where(r => r.MedicineId == medicineId).ToList();
+
+                    if (remindersToDelete.Any())
+                    {
+                        _context.Reminders.RemoveRange(remindersToDelete);
+                    }
+
                     _context.Medicines.Remove(medicine);
                     await _context.SaveChangesAsync();
                 }
+
             }
             catch (Exception ex)
             {

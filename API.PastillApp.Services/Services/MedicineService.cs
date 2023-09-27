@@ -4,6 +4,7 @@ using API.PastillApp.Repositories.Interface;
 using API.PastillApp.Services.DTOs;
 using API.PastillApp.Services.Interfaces;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.PastillApp.Services.Services
 {
@@ -47,9 +48,18 @@ namespace API.PastillApp.Services.Services
             };
         }
 
-        public Task<ResponseDTO> DeleteMedicine(int medicineId)
+        public async Task<ResponseDTO> DeleteMedicine(int medicineId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _medicineRepository.DeleteMedicine(medicineId);
+                return new ResponseDTO { isSuccess = true };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al eliminar el estado diario: {ex.Message}");
+                return new ResponseDTO { isSuccess = false, message = "Error al eliminar el estado diario" };
+            }
         }
 
         public async Task<List<Medicine>> GetAllMedicines()
@@ -72,10 +82,30 @@ namespace API.PastillApp.Services.Services
             
         }
 
-        public Task<ResponseDTO> UpdateMedicine(Medicine medicine)
+        public async Task<ResponseDTO> UpdateMedicine(Medicine medicine)
         {
-            throw new NotImplementedException();
+            try
+            {
+                // Update medicine in repository
+                await _medicineRepository.UpdateMedicine(medicine);
+
+                // Returns success if appropiate
+                return new ResponseDTO { isSuccess = true, message = "Medicamento actualizado con éxito" };
+            }
+            catch (DbUpdateException dbEx)
+            {
+                // Specific exceptions in Databases errors
+                Console.WriteLine($"Error de base de datos al actualizar el medicamento: {dbEx.Message}");
+                return new ResponseDTO { isSuccess = false, message = "Error de base de datos al actualizar el medicamento" };
+            }
+            catch (Exception ex)
+            {
+                // Handles general exceptions
+                Console.WriteLine($"Error al actualizar el medicamento: {ex.Message}");
+                return new ResponseDTO { isSuccess = false, message = "Error al actualizar el medicamento" };
+            }
         }
 
     }
+
 }
