@@ -13,8 +13,10 @@ namespace API.PastillApp.Services.Interfaces
         Task<AlertLog> GetAlertLog(int alertLogId);
         Task<List<AlertLog>> GetAllAlertLogs();
         Task<List<AlertLog>> GetAllAlertLogsByUserId(int userId);
+        Task<AlertLog> GetAlertLogByReminderLogId(int reminderLogId);
         Task<ResponseDTO> CreateAlertLog(CreateAlertLogDTO alertLogDTO);
         Task<ResponseDTO> UpdateAlertLog(AlertLog alertLog);
         Task<ResponseDTO> DeleteAlertLog(int alertLogId);
+
     }
 }
