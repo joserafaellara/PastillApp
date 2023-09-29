@@ -15,6 +15,7 @@ namespace API.PastillApp.Domain.Entities
         public int UserId { get; set; }
 
         [Required]
+        
         [MaxLength(50)]
         public string? Name { get; set; }
 

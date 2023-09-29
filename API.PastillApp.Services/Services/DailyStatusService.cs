@@ -104,9 +104,47 @@ namespace API.PastillApp.Services.Services
             }
         }
 
-        public Task<ResponseDTO> UpdateDailyStatus(DailyStatus dailyStatus)
+        public async Task<ResponseDTO> UpdateDailyStatus(UpdateDailyStatusDTO updateDailyStatusDTO)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var dailyStatusToUpdate = await _dailyStatusRepository.GetDailyStatusById(updateDailyStatusDTO.DailyStatusID);
+                if (dailyStatusToUpdate == null)
+                {
+                    return new ResponseDTO
+                    {
+                        isSuccess = false,
+                        message = "Estado diario no encontrado",
+                    };
+                }
+
+                if(!string.IsNullOrWhiteSpace(updateDailyStatusDTO.Symptoms))
+                {
+                    dailyStatusToUpdate.Symptoms = updateDailyStatusDTO.Symptoms;
+                }
+
+                if (!string.IsNullOrWhiteSpace(updateDailyStatusDTO.Observation))
+                {
+                    dailyStatusToUpdate.Observation = updateDailyStatusDTO.Observation;
+                }
+
+                await _dailyStatusRepository.UpdateDailyStatus(dailyStatusToUpdate);
+
+                return new ResponseDTO
+                {
+                    isSuccess = true,
+                    message = "Estado diario actualizado",
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al actualizar el estado diario: {ex.Message}");
+                return new ResponseDTO
+                {
+                    isSuccess = false,
+                    message = "Error al actualizar el estado diario",
+                };
+            }
         }
     }
 }

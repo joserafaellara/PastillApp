@@ -10,7 +10,7 @@ namespace API.PastillApp.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userService )
+        public UserController(IUserService userService)
         {
             _userService = userService;
         }
@@ -26,6 +26,14 @@ namespace API.PastillApp.Controllers
         public async Task<IActionResult> CreateUser(CreateUserDTO createUserDTO)
         {
             var result = await _userService.CreateUser(createUserDTO);
+            return result.isSuccess ? Ok() : BadRequest(result);
+        }
+
+        [HttpPut("{userId}")]
+        public async Task<IActionResult> UpdateUser([FromRoute] int userId, UpdateUserDTO updateUserDTO)
+        {
+            updateUserDTO.UserId = userId;
+            var result = await _userService.UpdateUser(updateUserDTO);
             return result.isSuccess ? Ok() : BadRequest(result);
         }
     }

@@ -10,7 +10,7 @@ namespace API.PastillApp.Services.Interfaces
         Task<User> GetUserByEmail(string email);
         Task<List<User>> GetAllUsers();
         Task<ResponseDTO> CreateUser(CreateUserDTO user);
-        Task<ResponseDTO> UpdateUser(User user);
+        Task<ResponseDTO> UpdateUser(UpdateUserDTO user);
         Task<ResponseDTO> DeleteUser(int userId);
 
     }
