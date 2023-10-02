@@ -65,6 +65,8 @@ namespace API.PastillApp.Controllers
             var result = await _userService.UpdateUser(updateUserDTO);
             return result.isSuccess ? Ok() : BadRequest(result);
 
+        }
+
         [HttpDelete("{userId}")]
         public async Task<IActionResult> DeleteUser(int userId)
         {
