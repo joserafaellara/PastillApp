@@ -57,23 +57,6 @@ namespace API.PastillApp.Controllers
             return result.isSuccess ? Ok() : BadRequest(result);
         }
 
-        [HttpPut("{dailyStatusId}")]
-        public async Task<IActionResult> UpdateUser(int userId, User user)
-        {
-            try
-            {
-                if (userId != user.UserId)
-                    return BadRequest("ID de usuario no coincide.");
-
-                var result = await _userService.UpdateUser(user);
-                return result.isSuccess ? Ok(result) : BadRequest(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Error al actualizar el usuario: {ex.Message}");
-            }
-        }
-
         [HttpDelete("{userId}")]
         public async Task<IActionResult> DeleteUser(int userId)
         {

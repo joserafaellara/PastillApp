@@ -17,7 +17,7 @@ namespace API.PastillApp.Services.Mapper
             CreateMap<CreateUserDTO, User>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.Lastname))
-                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email!.ToLower()));
 
             CreateMap<CreateUserDTO, User>()
                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
