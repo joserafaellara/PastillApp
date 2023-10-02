@@ -11,16 +11,23 @@ namespace API.PastillApp.Repositories.Interface
     {
         Task AddAlertLog(AlertLog alertLog);
 
-        // READ (Obtener un registro de AlertLog por ID)
+        // READ (Get an alertLog by its Id)
         Task<AlertLog> GetAlertLogById(int alertLogId);
 
-        // READ (Obtener todos los registros de AlertLog)
+        // READ (Get all registered alertLog)
         Task<List<AlertLog>> GetAllAlertLogs();
 
-        // UPDATE (Actualizar un registro de AlertLog)
+        // UPDATE (Update a registered alertLog)
         Task UpdateAlertLog(AlertLog alertLog);
 
-        // DELETE (Eliminar un registro de AlertLog)
+        // DELETE (Delete a registered alertLog)
         Task DeleteAlertLog(int alertLogId);
+
+        // READ (Get registered alertLog by emergency user ID)
+        Task <AlertLog> GetAlertLogByUserId(int userId);
+
+        // READ (Get an alertLog by an specific reminder log)
+        Task <AlertLog> GetAlertLogByReminderLogId(int reminderLogId);
+
     }
 }

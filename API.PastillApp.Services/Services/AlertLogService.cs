@@ -3,11 +3,6 @@ using API.PastillApp.Repositories.Interface;
 using API.PastillApp.Services.DTOs;
 using API.PastillApp.Services.Interfaces;
 using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace API.PastillApp.Services.Services
 {
@@ -93,9 +88,31 @@ namespace API.PastillApp.Services.Services
             }
         }
 
-        public Task<List<AlertLog>> GetAllAlertLogsByUserId(int userId)
+        public async Task<List<AlertLog>> GetAllAlertLogsByUserId(int userId)
         {
+            /*try
+            {
+                return await _alertLogRepository.GetAlertLogByUserId(userId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al obtener todos los registros de alerta del usuario de emergencia: {ex.Message}");
+                throw;
+            }*/
             throw new NotImplementedException();
         }
+        public async Task<AlertLog> GetAlertLogByReminderLogId(int reminderLogId)
+        {
+            try
+            {
+                return await _alertLogRepository.GetAlertLogByReminderLogId(reminderLogId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al obtener el registros de alerta del reminderLog especificado: {ex.Message}");
+                throw;
+            }
+        }
+
     }
 }

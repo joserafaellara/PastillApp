@@ -64,9 +64,13 @@ namespace API.PastillApp.Services.Services
             return user;
         }
 
-        public Task<User> GetUserByEmail(string email)
+        public async Task<User> GetUserByEmail(string email)
         {
-            throw new NotImplementedException();
+            email = email.ToLower();
+
+            var user = await _userRepository.GetUserByEmail(email);
+
+            return user;
         }
 
         public async Task<ResponseDTO> UpdateUser(UpdateUserDTO user)

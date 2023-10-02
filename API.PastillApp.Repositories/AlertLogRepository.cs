@@ -1,11 +1,6 @@
 ﻿using API.PastillApp.Domain.Entities;
 using API.PastillApp.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace API.PastillApp.Repositories
 {
@@ -62,17 +57,38 @@ namespace API.PastillApp.Repositories
         }
 
         // READ (Get an Alert log by EmergencyUser ID)
-        public async Task<AlertLog> GetAlertLogByEmergencyUserId(int EmergencyUserId)
+        public async Task<AlertLog> GetAlertLogByUserId(int userId)
         {
-            try
+            /*try
             {
-                return await _context.AlertLogs.FirstOrDefaultAsync(r => r.EmergencyUserId == EmergencyUserId);
+                return await _context.AlertLogs.FirstOrDefaultAsync(r => r.EmergencyUserId == userId);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al obtener la alerta por Id de Usuario de Emergencia: {ex.Message}");
+                Console.WriteLine($"Error al obtener la alerta por Id de usuario de emergencia: {ex.Message}");
                 throw;
             }
+
+            ||
+
+            public async Task<List<AlertLog>> GetAllAlertLogsByUserId(int emergencyUserId)
+            {
+            try
+            {
+            return await _context.AlertLogs
+            .Where(r => r.EmergencyUserId == emergencyUserId)
+            .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+            Console.WriteLine($"Error al obtener las alertas por Id de Usuario de Emergencia: {ex.Message}");
+            throw;
+            }
+           }
+
+            */
+
+            throw new NotImplementedException();
         }
 
         // READ (Get all the Alert logs)
@@ -104,7 +120,7 @@ namespace API.PastillApp.Repositories
             }
         }
 
-        // DELETE (Delet an alert log by ID)
+        // DELETE (Delete an alert log by ID)
         public async Task DeleteAlertLog(int alertLogId)
         {
             try
