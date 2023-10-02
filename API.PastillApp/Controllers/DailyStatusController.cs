@@ -76,15 +76,13 @@ namespace API.PastillApp.Controllers
             }
         }
 
-        [HttpPut("{dailyStatusId}")]
-        public async Task<IActionResult> UpdateDailyStatus(int dailyStatusId, DailyStatus dailyStatus)
+        [HttpPut("dailyStatus/{dailyStatusId}")]
+        public async Task<IActionResult> UpdateDailyStatus([FromRoute] int dailyStatusId, UpdateDailyStatusDTO updateDailyStatusDTO)
         {
             try
             {
-                if (dailyStatusId != dailyStatus.DailyStatusID)
-                    return BadRequest("ID de estado diario no coincide.");
-
-                var result = await _dailyStatusService.UpdateDailyStatus(dailyStatus);
+                updateDailyStatusDTO.DailyStatusID = dailyStatusId;
+                var result = await _dailyStatusService.UpdateDailyStatus(updateDailyStatusDTO);
                 return result.isSuccess ? Ok(result) : BadRequest(result);
             }
             catch (Exception ex)

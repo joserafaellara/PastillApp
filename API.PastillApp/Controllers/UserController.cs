@@ -57,6 +57,14 @@ namespace API.PastillApp.Controllers
             return result.isSuccess ? Ok() : BadRequest(result);
         }
 
+
+        [HttpPut("{userId}")]
+        public async Task<IActionResult> UpdateUser([FromRoute] int userId, UpdateUserDTO updateUserDTO)
+        {
+            updateUserDTO.UserId = userId;
+            var result = await _userService.UpdateUser(updateUserDTO);
+            return result.isSuccess ? Ok() : BadRequest(result);
+
         [HttpDelete("{userId}")]
         public async Task<IActionResult> DeleteUser(int userId)
         {
@@ -69,6 +77,7 @@ namespace API.PastillApp.Controllers
             {
                 return BadRequest($"Error al eliminar el usuario: {ex.Message}");
             }
+
         }
     }
 }

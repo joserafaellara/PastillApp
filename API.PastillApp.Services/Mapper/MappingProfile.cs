@@ -47,7 +47,14 @@ namespace API.PastillApp.Services.Mapper
                 .ForMember(dest => dest.Observation, opt => opt.MapFrom(src => src.Observation))
                 .ForMember(dest => dest.FinalDate, opt => opt.MapFrom(src => src.FinalDate));
 
+            CreateMap<UpdateUserDTO, User>()
+                .ForMember(dest => dest.Name, opt => opt.Condition(src => !string.IsNullOrWhiteSpace(src.Name)))
+                .ForMember(dest => dest.LastName, opt => opt.Condition(src => !string.IsNullOrWhiteSpace(src.LastName)))
+                .ForMember(dest => dest.Email, opt => opt.Condition(src => !string.IsNullOrWhiteSpace(src.Email)));
 
+            CreateMap<UpdateDailyStatusDTO, DailyStatus>()
+                .ForMember(dest => dest.Symptoms, opt => opt.MapFrom(src => src.Symptoms))
+                .ForMember(dest => dest.Observation, opt => opt.MapFrom(src => src.Observation));
 
         }
     }

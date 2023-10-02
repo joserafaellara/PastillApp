@@ -14,7 +14,7 @@ namespace API.PastillApp.Services.Interfaces
         Task<List<DailyStatus>> GetDailyStatusByUserId(int userId);
         Task<DailyStatus> GetDailyStatusById(int dailyStatusId);
         Task<List<DailyStatus>> GetAllDailyStatuses();
-        Task<ResponseDTO> UpdateDailyStatus(DailyStatus dailyStatus);
+        Task<ResponseDTO> UpdateDailyStatus(UpdateDailyStatusDTO dailyStatus);
         Task<ResponseDTO> DeleteDailyStatus(int dailyStatusId);
     }
 }

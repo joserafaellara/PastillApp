@@ -73,9 +73,51 @@ namespace API.PastillApp.Services.Services
             return user;
         }
 
-        public Task<ResponseDTO> UpdateUser(User user)
+        public async Task<ResponseDTO> UpdateUser(UpdateUserDTO user)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var userToUpdate = await _userRepository.GetUserById(user.UserId);
+                if (userToUpdate == null)
+                {
+                    return new ResponseDTO
+                    {
+                        isSuccess = false,
+                        message = "Usuario no encontrado",
+                    };
+                }
+
+                if (!string.IsNullOrWhiteSpace(user.Name))
+                {
+                    userToUpdate.Name = user.Name;
+                }
+
+                if (!string.IsNullOrWhiteSpace(user.LastName))
+                {
+                    userToUpdate.LastName = user.LastName;
+                }
+
+                if (!string.IsNullOrWhiteSpace(user.Email))
+                {
+                    userToUpdate.Email = user.Email;
+                }
+
+                await _userRepository.UpdateUser(userToUpdate);
+                return new ResponseDTO
+                {
+                    isSuccess = true,
+                    message = "Usuario actualizado",
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al actualizar el usuario: {ex.Message}");
+                return new ResponseDTO
+                {
+                    isSuccess = false,
+                    message = "Error al actualizar el usuario",
+                };
+            }
         }
     }
 }
