@@ -34,18 +34,24 @@ namespace API.PastillApp.Services.Mapper
 
             CreateMap<CreateMedicineDTO, Medicine>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-                .ForMember(dest => dest.Dosage, opt => opt.MapFrom(src => src.Dosage))
-                .ForMember(dest => dest.Presentation, opt => opt.MapFrom(src => src.Presentation));
+                .ForMember(dest => dest.Dosage, opt => opt.MapFrom(src => src.Dosage));
+                
 
             CreateMap<CreateReminderDTO, Reminder>()
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
                 .ForMember(dest => dest.MedicineId, opt => opt.MapFrom(src => src.MedicineId))
                 .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
                 .ForMember(dest => dest.DateTimeStart, opt => opt.MapFrom(src => src.DateTimeStart))
-                .ForMember(dest => dest.Frequency, opt => opt.MapFrom(src => src.Frequency))
+                .ForMember(dest => dest.FrequencyText, opt => opt.MapFrom(src => src.FrequencyText))
+                .ForMember(dest => dest.FrequencyNumber, opt => opt.MapFrom(src => src.FrequencyNumber))
                 .ForMember(dest => dest.EmergencyAlert, opt => opt.MapFrom(src => src.EmergencyAlert))
                 .ForMember(dest => dest.Observation, opt => opt.MapFrom(src => src.Observation))
-                .ForMember(dest => dest.FinalDate, opt => opt.MapFrom(src => src.FinalDate));
+                .ForMember(dest => dest.IntakeDays, opt => opt.MapFrom(src => src.IntakeDays))
+                .ForMember(dest => dest.Presentation, opt => opt.MapFrom(src => src.Presentation))
+                .ForMember(dest => dest.intakeDateTimes, opt => opt.MapFrom(src => src.intakeDateTimes))
+                .ForMember(dest => dest.EndDateTime, opt => opt.MapFrom(src => src.EndDateTime));
+           
+
 
             CreateMap<UpdateUserDTO, User>()
                 .ForMember(dest => dest.Name, opt => opt.Condition(src => !string.IsNullOrWhiteSpace(src.Name)))

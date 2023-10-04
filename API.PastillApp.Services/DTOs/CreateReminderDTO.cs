@@ -18,12 +18,21 @@ namespace API.PastillApp.Services.DTOs
 
         public DateTime DateTimeStart { get; set; }
 
-        public int Frequency { get; set; }
-        
+        public int FrequencyNumber { get; set; }
+
+        public int FrequencyText { get; set; }
+
         public bool EmergencyAlert { get; set; }
 
         public string? Observation { get; set; }
 
-        public DateTime FinalDate { get; set; }
+        public int IntakeDays { get; set; }
+
+        public DateTime? EndDateTime { get; set; }
+
+        public string Presentation { get; set; }
+
+        public List<DateTime>? intakeDateTimes { get; set; }
+
     }
 }

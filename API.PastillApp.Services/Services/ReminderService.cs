@@ -4,6 +4,7 @@ using API.PastillApp.Repositories.Interface;
 using API.PastillApp.Services.DTOs;
 using API.PastillApp.Services.Interfaces;
 using AutoMapper;
+using System.Diagnostics;
 
 namespace API.PastillApp.Services.Services
 {
@@ -17,21 +18,42 @@ namespace API.PastillApp.Services.Services
             _mapper = mapper;
         }
         public async Task<ResponseDTO> CreateReminder(CreateReminderDTO reminder)
-        {
+        {   
             try
             {
-                var newReminder = _mapper.Map<Reminder>(reminder);
-
-                // Add the new reminder to the data base (if you have an ReminderRepository)
-                await _reminderRepository.AddReminder(newReminder);
-
-                // Crear y devolver una respuesta de éxito
                 var response = new ResponseDTO
                 {
                     isSuccess = true,
                     message = "Recordatorio creado con éxito",
                 };
+                var responseNeg = new ResponseDTO
+                {
+                    isSuccess = false,
+                    message = "Error al crear el recordatorio",
+                };
 
+                string daily = "Diario";
+                string weekly = "Semanal";
+                string fortnightly = "Quincenal";
+                string monthly = "Mensual";
+                var newReminder = _mapper.Map<Reminder>(reminder);
+
+                if (newReminder.FrequencyNumber >= 1 && newReminder.FrequencyNumber <= 31)
+                {
+                    if (newReminder.FrequencyText == daily || newReminder.FrequencyText == weekly || newReminder.FrequencyText == fortnightly || newReminder.FrequencyText == monthly)
+                    {
+                        DefineEndDate(newReminder);
+                        // Add the new reminder to the database (if you have a ReminderRepository)
+                        await _reminderRepository.AddReminder(newReminder);
+                    } else
+                    {
+                        response = responseNeg;
+                    }
+                } else
+                {
+                    response = responseNeg;
+                }
+                
                 return response;
             }
             catch (Exception ex)
@@ -46,6 +68,64 @@ namespace API.PastillApp.Services.Services
                 return errorResponse;
             };
         }
+
+        public void DefineEndDate(Reminder reminder)
+        {
+            reminder.EndDateTime = reminder.DateTimeStart.AddDays(reminder.IntakeDays);
+        }
+
+        private List<DateTime> DefineIntakeDateTimes(Reminder reminder)
+        {
+            List<DateTime> intakeDateTimes = new List<DateTime>();
+
+            DateTime startTime = reminder.DateTimeStart;
+
+            switch (reminder.FrequencyText)
+            {
+                case "Diaria":
+                    while (startTime <= reminder.EndDateTime)
+                    {
+                        intakeDateTimes.Add(startTime);
+                        startTime = startTime.AddDays(1);
+                    }
+                    break;
+
+                case "Semanal":
+                    while (startTime <= reminder.EndDateTime)
+                    {
+                        intakeDateTimes.Add(startTime);
+                        startTime = startTime.AddDays(7 * reminder.FrequencyNumber);
+                    }
+                    break;
+
+                case "Quincenal":
+                    while (startTime <= reminder.EndDateTime)
+                    {
+                        intakeDateTimes.Add(startTime);
+                        startTime = startTime.AddDays(14 * reminder.FrequencyNumber);
+                    }
+                    break;
+
+                case "Mensual":
+                    while (startTime <= reminder.EndDateTime)
+                    {
+                        intakeDateTimes.Add(startTime);
+                        startTime = startTime.AddMonths(reminder.FrequencyNumber);
+                    }
+                    break;
+
+                default:
+                    // Handle an invalid frequency or other cases as needed
+                    throw new ArgumentException("Frecuencia de toma no válida");
+            }
+
+            return intakeDateTimes;
+        }
+
+
+
+
+
 
         public Task<ResponseDTO> DeleteReminder(int reminderId)
         {

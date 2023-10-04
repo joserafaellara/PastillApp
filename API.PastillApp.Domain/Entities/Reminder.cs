@@ -1,4 +1,5 @@
-﻿using System;
+﻿using API.PastillApp.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -37,9 +38,6 @@ namespace API.PastillApp.Domain.Entities
         [Required]
         public string FrequencyText { get; set; }
 
-
-
-
         [Required]
         public bool EmergencyAlert { get; set; }
 
@@ -47,7 +45,11 @@ namespace API.PastillApp.Domain.Entities
         public string? Observation { get; set; }
 
         [Required]
-        public DateTime FinalDate { get; set; }
+        public int IntakeDays { get; set; }
+
+        public DateTime? EndDateTime { get; set; }
+
+        public List<DateTime> intakeDateTimes { get; set; }
 
 
         public virtual User? User { get; set; }
