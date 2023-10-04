@@ -26,10 +26,19 @@ namespace API.PastillApp.Domain.Entities
         public int Quantity { get; set; }
 
         [Required]
+        public string? Presentation { get; set; }
+
+        [Required]
         public DateTime DateTimeStart { get; set; }
 
         [Required]
-        public int Frequency { get; set; }
+        public int FrequencyNumber { get; set; }
+
+        [Required]
+        public string FrequencyText { get; set; }
+
+
+
 
         [Required]
         public bool EmergencyAlert { get; set; }
