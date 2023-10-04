@@ -14,8 +14,7 @@ namespace API.PastillApp.Domain.Entities
 
         [Required]
         public int Dosage {  get; set; }
-        [Required]
-        public string? Presentation { get; set; }
+       
 
 
     }
