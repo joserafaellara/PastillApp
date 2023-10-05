@@ -26,13 +26,15 @@ namespace API.PastillApp.Services.DTOs
 
         public string? Observation { get; set; }
 
-        public int IntakeDays { get; set; }
+        public int IntakeTimeNumber { get; set; }
+
+        public string IntakeTimeText { get; set; }
 
         public DateTime? EndDateTime { get; set; }
 
         public string Presentation { get; set; }
 
-        public List<DateTime>? intakeDateTimes { get; set; }
+        public List<DateTime>? ReminderDateTimes { get; set; }
 
     }
 }

@@ -46,9 +46,10 @@ namespace API.PastillApp.Services.Mapper
                 .ForMember(dest => dest.FrequencyNumber, opt => opt.MapFrom(src => src.FrequencyNumber))
                 .ForMember(dest => dest.EmergencyAlert, opt => opt.MapFrom(src => src.EmergencyAlert))
                 .ForMember(dest => dest.Observation, opt => opt.MapFrom(src => src.Observation))
-                .ForMember(dest => dest.IntakeDays, opt => opt.MapFrom(src => src.IntakeDays))
+                .ForMember(dest => dest.IntakeTimeNumber, opt => opt.MapFrom(src => src.IntakeTimeNumber))
+                .ForMember(dest => dest.IntakeTimeText, opt => opt.MapFrom(src => src.IntakeTimeText))
                 .ForMember(dest => dest.Presentation, opt => opt.MapFrom(src => src.Presentation))
-                .ForMember(dest => dest.intakeDateTimes, opt => opt.MapFrom(src => src.intakeDateTimes))
+                .ForMember(dest => dest.ReminderDateTimes, opt => opt.MapFrom(src => src.ReminderDateTimes))
                 .ForMember(dest => dest.EndDateTime, opt => opt.MapFrom(src => src.EndDateTime));
            
 

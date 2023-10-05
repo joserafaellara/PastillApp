@@ -38,12 +38,14 @@ namespace API.PastillApp.Services.Services
                 string monthly = "Mensual";
                 var newReminder = _mapper.Map<Reminder>(reminder);
 
-                if (newReminder.FrequencyNumber >= 1 && newReminder.FrequencyNumber <= 31)
+                   // codigo a modificar:
+               /* if ((newReminder.FrequencyNumber >= 1 && newReminder.FrequencyNumber <= 31) )
                 {
                     if (newReminder.FrequencyText == daily || newReminder.FrequencyText == weekly || newReminder.FrequencyText == fortnightly || newReminder.FrequencyText == monthly)
                     {
                         DefineEndDate(newReminder);
-                        // Add the new reminder to the database (if you have a ReminderRepository)
+                        DefineIntakeDateTimes(newReminder);
+                        
                         await _reminderRepository.AddReminder(newReminder);
                     } else
                     {
@@ -53,12 +55,14 @@ namespace API.PastillApp.Services.Services
                 {
                     response = responseNeg;
                 }
+
+               */
                 
                 return response;
             }
             catch (Exception ex)
             {
-                // En caso de error, crear y devolver una respuesta de error
+                
                 var errorResponse = new ResponseDTO
                 {
                     isSuccess = false,
@@ -68,13 +72,21 @@ namespace API.PastillApp.Services.Services
                 return errorResponse;
             };
         }
-
-        public void DefineEndDate(Reminder reminder)
-        {
-            reminder.EndDateTime = reminder.DateTimeStart.AddDays(reminder.IntakeDays);
+         //Reescribir metodo
+       /* public void DefineEndDate(Reminder reminder)
+        {   if(reminder.IntakeDays == -2)
+            {
+                reminder.EndDateTime = reminder.DateTimeStart.AddDays(365);
+            }else
+            {
+                reminder.EndDateTime = reminder.DateTimeStart.AddDays(reminder.IntakeDays);
+            }
+            
         }
+       */
 
-        private List<DateTime> DefineIntakeDateTimes(Reminder reminder)
+        //REESCRIBIR METODO
+        /*private List<DateTime> DefineIntakeDateTimes(Reminder reminder)
         {
             List<DateTime> intakeDateTimes = new List<DateTime>();
 
@@ -118,10 +130,10 @@ namespace API.PastillApp.Services.Services
                     // Handle an invalid frequency or other cases as needed
                     throw new ArgumentException("Frecuencia de toma no válida");
             }
-
+            reminder.IntakeDateTimes = intakeDateTimes;
             return intakeDateTimes;
         }
-
+        */
 
 
 

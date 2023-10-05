@@ -1,4 +1,4 @@
-﻿using API.PastillApp.Domain.Enums;
+﻿
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -24,7 +24,7 @@ namespace API.PastillApp.Domain.Entities
         public int MedicineId { get; set; }
 
         [Required]
-        public int Quantity { get; set; }
+        public double Quantity { get; set; }
 
         [Required]
         public string? Presentation { get; set; }
@@ -45,11 +45,14 @@ namespace API.PastillApp.Domain.Entities
         public string? Observation { get; set; }
 
         [Required]
-        public int IntakeDays { get; set; }
+        public int IntakeTimeNumber { get; set; }
+
+        [Required]
+        public int IntakeTimeText { get; set; }
 
         public DateTime? EndDateTime { get; set; }
 
-        public List<DateTime> intakeDateTimes { get; set; }
+        public List<ReminderDateTime>? ReminderDateTimes { get; set; }
 
 
         public virtual User? User { get; set; }
