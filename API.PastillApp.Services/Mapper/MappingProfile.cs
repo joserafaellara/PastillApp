@@ -63,6 +63,11 @@ namespace API.PastillApp.Services.Mapper
                 .ForMember(dest => dest.Symptoms, opt => opt.MapFrom(src => src.Symptoms))
                 .ForMember(dest => dest.Observation, opt => opt.MapFrom(src => src.Observation));
 
+            CreateMap<CreateTokenDTO, Token>()
+                .ForMember(dest => dest.DeviceToken, opt => opt.Condition(src => !string.IsNullOrWhiteSpace(src.DeviceToken)))
+                .ForMember(dest => dest.UserEmail, opt => opt.Condition(src => !string.IsNullOrWhiteSpace(src.UserEmail)));
+
         }
+
     }
 }
