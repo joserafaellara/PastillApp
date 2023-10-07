@@ -28,6 +28,8 @@ builder.Services.AddScoped<IAlertLogRepository, AlertLogRepository>();
 builder.Services.AddScoped<IReminderRepository, ReminderRepository>();
 builder.Services.AddScoped<IDailyStatusRepository, DailyStatusRepository>();
 builder.Services.AddScoped<IMedicineRepository, MedicineRepository>();
+builder.Services.AddScoped<ITokenRepository, TokenRepository>();
+
 
 #region SERVICES
 
@@ -36,7 +38,8 @@ builder.Services
     .AddTransient<IAlertLogService, AlertLogService>()
     .AddTransient<IReminderService, ReminderService>()
     .AddTransient<IMedicineService, MedicineService>()
-    .AddTransient<IDailyStatusService, DailyStatusService>();
+    .AddTransient<IDailyStatusService, DailyStatusService>()
+    .AddTransient<ITokenService, TokenService>();
 #endregion
 
 var app = builder.Build();

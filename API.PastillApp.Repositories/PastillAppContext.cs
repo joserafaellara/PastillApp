@@ -38,7 +38,7 @@ namespace API.PastillApp.Repositories
         public DbSet<Reminder> Reminders { get; set; }
         public DbSet<ReminderLog> ReminderLogs { get; set; }
         public DbSet<User> Users { get; set; }
-
         public DbSet<ReminderDateTime> RemindersDateTimes { get; set; }
+        public DbSet<Token> Tokens { get; set; }
     }
 }
