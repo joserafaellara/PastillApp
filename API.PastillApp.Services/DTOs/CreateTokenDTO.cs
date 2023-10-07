@@ -10,6 +10,5 @@ namespace API.PastillApp.Services.DTOs
     {
         public string? DeviceToken { get; set; }
         public string? UserEmail { get; set; }
-        public int? UserId { get; set; }
     }
 }
