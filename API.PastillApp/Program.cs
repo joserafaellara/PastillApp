@@ -29,6 +29,7 @@ builder.Services.AddScoped<IReminderRepository, ReminderRepository>();
 builder.Services.AddScoped<IDailyStatusRepository, DailyStatusRepository>();
 builder.Services.AddScoped<IMedicineRepository, MedicineRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
+builder.Services.AddScoped<IReminderLogsRepository, ReminderLogRepository>();
 
 
 #region SERVICES

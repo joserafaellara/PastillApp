@@ -57,7 +57,7 @@ namespace API.PastillApp.Controllers
         public async Task<IActionResult> CreateReminder(CreateReminderDTO createReminderDTO)
         {
             var result = await _reminderService.CreateReminder(createReminderDTO);
-            return result.isSuccess ? Ok() : BadRequest(result);
+            return result.isSuccess ? Ok(result) : BadRequest(result);
         }
 
         [HttpPut("{reminderId}")]

@@ -123,5 +123,10 @@ namespace API.PastillApp.Repositories
                 throw;
             }
         }
+
+        public async Task BeginTransaction()
+        {
+            await _context.Database.BeginTransactionAsync();
+        }
     }
 }

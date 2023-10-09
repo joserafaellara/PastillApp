@@ -42,15 +42,13 @@ namespace API.PastillApp.Services.Mapper
                 .ForMember(dest => dest.MedicineId, opt => opt.MapFrom(src => src.MedicineId))
                 .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
                 .ForMember(dest => dest.DateTimeStart, opt => opt.MapFrom(src => src.DateTimeStart))
-                .ForMember(dest => dest.FrequencyText, opt => opt.MapFrom(src => src.FrequencyText))
-                .ForMember(dest => dest.FrequencyNumber, opt => opt.MapFrom(src => src.FrequencyNumber))
+                .ForMember(dest => dest.FrequencyText, opt => opt.MapFrom(src => src.FrequencyType))
+                .ForMember(dest => dest.FrequencyNumber, opt => opt.MapFrom(src => src.FrequencyValue))
                 .ForMember(dest => dest.EmergencyAlert, opt => opt.MapFrom(src => src.EmergencyAlert))
                 .ForMember(dest => dest.Observation, opt => opt.MapFrom(src => src.Observation))
-                .ForMember(dest => dest.IntakeTimeNumber, opt => opt.MapFrom(src => src.IntakeTimeNumber))
-                .ForMember(dest => dest.IntakeTimeText, opt => opt.MapFrom(src => src.IntakeTimeText))
-                .ForMember(dest => dest.Presentation, opt => opt.MapFrom(src => src.Presentation))
-                .ForMember(dest => dest.ReminderDateTimes, opt => opt.MapFrom(src => src.ReminderDateTimes))
-                .ForMember(dest => dest.EndDateTime, opt => opt.MapFrom(src => src.EndDateTime));
+                .ForMember(dest => dest.IntakeTimeNumber, opt => opt.MapFrom(src => src.DurationValue))
+                .ForMember(dest => dest.IntakeTimeText, opt => opt.MapFrom(src => src.DurationType))
+                .ForMember(dest => dest.Presentation, opt => opt.MapFrom(src => src.Presentation));
            
 
 

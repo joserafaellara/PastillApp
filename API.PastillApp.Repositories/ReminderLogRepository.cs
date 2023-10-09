@@ -1,4 +1,5 @@
 ﻿using API.PastillApp.Domain.Entities;
+using API.PastillApp.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace API.PastillApp.Repositories
 {
-    internal class ReminderLogRepository
+    public class ReminderLogRepository : IReminderLogsRepository
     {
         private readonly PastillAppContext _context;
 
@@ -104,6 +105,20 @@ namespace API.PastillApp.Repositories
             catch (Exception ex)
             {
                 Console.WriteLine($"Error al eliminar el log del recordatorio: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task AddReminderLogs(List<ReminderLog> reminderLogs)
+        {
+            try
+            {
+                await _context.ReminderLogs.AddRangeAsync(reminderLogs);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al agregar logs del recordatorio: {ex.Message}");
                 throw;
             }
         }

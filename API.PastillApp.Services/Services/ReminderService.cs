@@ -1,144 +1,61 @@
-﻿using API.PastillApp.Domain.Entities;
+﻿using API.PastillApp.Domain.Common;
+using API.PastillApp.Domain.Entities;
 using API.PastillApp.Repositories;
 using API.PastillApp.Repositories.Interface;
 using API.PastillApp.Services.DTOs;
 using API.PastillApp.Services.Interfaces;
 using AutoMapper;
-using System.Diagnostics;
 
 namespace API.PastillApp.Services.Services
 {
     public class ReminderService : IReminderService
     {
         private readonly IReminderRepository _reminderRepository;
+        private readonly IReminderLogsRepository _reminderLogsRepository;
+        private readonly PastillAppContext _context;
         private readonly IMapper _mapper;
-        public ReminderService(IReminderRepository reminderRepository, IMapper mapper)
+        public ReminderService(IReminderRepository reminderRepository, IReminderLogsRepository reminderLogsRepository, IMapper mapper, PastillAppContext pastillAppContext)
         {
             _reminderRepository = reminderRepository;
+            _reminderLogsRepository = reminderLogsRepository;
+            _context = pastillAppContext;
             _mapper = mapper;
         }
-        public async Task<ResponseDTO> CreateReminder(CreateReminderDTO reminder)
-        {   
+
+        public async Task<ResponseDTO> CreateReminder(CreateReminderDTO createReminder)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
             try
             {
-                var response = new ResponseDTO
-                {
-                    isSuccess = true,
-                    message = "Recordatorio creado con éxito",
-                };
-                var responseNeg = new ResponseDTO
-                {
-                    isSuccess = false,
-                    message = "Error al crear el recordatorio",
-                };
+                var dateExpired = calculatedDateExpired(createReminder.DateTimeStart, createReminder.DurationType!, createReminder.DurationValue);
 
-                string daily = "Diario";
-                string weekly = "Semanal";
-                string fortnightly = "Quincenal";
-                string monthly = "Mensual";
-                var newReminder = _mapper.Map<Reminder>(reminder);
-
-                   // codigo a modificar:
-               /* if ((newReminder.FrequencyNumber >= 1 && newReminder.FrequencyNumber <= 31) )
+                if (createReminder.DateTimeStart >= dateExpired || createReminder.FrequencyValue <= 0)
                 {
-                    if (newReminder.FrequencyText == daily || newReminder.FrequencyText == weekly || newReminder.FrequencyText == fortnightly || newReminder.FrequencyText == monthly)
-                    {
-                        DefineEndDate(newReminder);
-                        DefineIntakeDateTimes(newReminder);
-                        
-                        await _reminderRepository.AddReminder(newReminder);
-                    } else
-                    {
-                        response = responseNeg;
-                    }
-                } else
-                {
-                    response = responseNeg;
+                    throw new ArgumentException("Los parámetros no son válidos.");
                 }
 
-               */
-                
-                return response;
+                TimeSpan frequency = calculateFrequency(createReminder.FrequencyType, createReminder.FrequencyValue);
+
+                var newReminder = _mapper.Map<Reminder>(createReminder);
+
+                newReminder.EndDateTime = dateExpired;
+
+                await _reminderRepository.AddReminder(newReminder);
+
+                await createReminderLogs(createReminder.DateTimeStart, frequency, dateExpired, newReminder.ReminderId);
+
+                transaction.Commit(); // Confirmar la transacción
+
+                return new ResponseDTO() { isSuccess = true };
             }
             catch (Exception ex)
             {
-                
-                var errorResponse = new ResponseDTO
-                {
-                    isSuccess = false,
-                    message = "Error al crear el recordatorio",
-                };
+                transaction.Rollback(); // Revertir la transacción en caso de error
 
-                return errorResponse;
-            };
-        }
-         //Reescribir metodo
-       /* public void DefineEndDate(Reminder reminder)
-        {   if(reminder.IntakeDays == -2)
-            {
-                reminder.EndDateTime = reminder.DateTimeStart.AddDays(365);
-            }else
-            {
-                reminder.EndDateTime = reminder.DateTimeStart.AddDays(reminder.IntakeDays);
+                return new ResponseDTO() { isSuccess = false, message = ex.Message };
             }
-            
         }
-       */
-
-        //REESCRIBIR METODO
-        /*private List<DateTime> DefineIntakeDateTimes(Reminder reminder)
-        {
-            List<DateTime> intakeDateTimes = new List<DateTime>();
-
-            DateTime startTime = reminder.DateTimeStart;
-
-            switch (reminder.FrequencyText)
-            {
-                case "Diaria":
-                    while (startTime <= reminder.EndDateTime)
-                    {
-                        intakeDateTimes.Add(startTime);
-                        startTime = startTime.AddDays(1);
-                    }
-                    break;
-
-                case "Semanal":
-                    while (startTime <= reminder.EndDateTime)
-                    {
-                        intakeDateTimes.Add(startTime);
-                        startTime = startTime.AddDays(7 * reminder.FrequencyNumber);
-                    }
-                    break;
-
-                case "Quincenal":
-                    while (startTime <= reminder.EndDateTime)
-                    {
-                        intakeDateTimes.Add(startTime);
-                        startTime = startTime.AddDays(14 * reminder.FrequencyNumber);
-                    }
-                    break;
-
-                case "Mensual":
-                    while (startTime <= reminder.EndDateTime)
-                    {
-                        intakeDateTimes.Add(startTime);
-                        startTime = startTime.AddMonths(reminder.FrequencyNumber);
-                    }
-                    break;
-
-                default:
-                    // Handle an invalid frequency or other cases as needed
-                    throw new ArgumentException("Frecuencia de toma no válida");
-            }
-            reminder.IntakeDateTimes = intakeDateTimes;
-            return intakeDateTimes;
-        }
-        */
-
-
-
-
-
         public Task<ResponseDTO> DeleteReminder(int reminderId)
         {
             throw new NotImplementedException();
@@ -160,10 +77,82 @@ namespace API.PastillApp.Services.Services
         {
             throw new NotImplementedException();
         }
-
         public Task<ResponseDTO> UpdateReminder(Reminder reminder)
         {
             throw new NotImplementedException();
         }
+        private async Task createReminderLogs(DateTime dateTimeStart, TimeSpan frecuency, DateTime dateExpired, int reminderId)
+        {
+            List<ReminderLog> reminderLogs = new List<ReminderLog>();
+            DateTime currentDateTime = dateTimeStart;
+
+            while (currentDateTime <= dateExpired)
+            {
+                reminderLogs.Add(new ReminderLog
+                {
+                    ReminderId = reminderId,
+                    DateTime = currentDateTime,
+                    Taken = false
+                });
+
+                currentDateTime = currentDateTime.Add(frecuency);
+            }
+           
+            await _reminderLogsRepository.AddReminderLogs(reminderLogs);
+
+        }
+
+        private TimeSpan calculateFrequency(string? frequencyType, int frequencyValue)
+        {
+            TimeSpan frecuency;
+
+            switch (frequencyType)
+            {
+                case Constants.Hour:
+                    frecuency = TimeSpan.FromHours(frequencyValue);
+                    break;
+                case Constants.Day:
+                    frecuency = TimeSpan.FromDays(frequencyValue);
+                    break;
+                case Constants.Week:
+                    frecuency = TimeSpan.FromDays(7 * frequencyValue);
+                    break;
+                case Constants.Month:
+                    frecuency = TimeSpan.FromDays(30 * frequencyValue);
+                    break;
+                default:
+                    throw new ArgumentException("Tipo de duración no válido.", nameof(frequencyType));
+            }
+
+            return frecuency;
+        }
+
+        private DateTime calculatedDateExpired(DateTime dateTimeStart, string durationType, int durationValue)
+        {
+            if (string.IsNullOrEmpty(durationType))
+                throw new ArgumentException("El tipo de duración no puede estar vacío.", nameof(durationType));
+
+            if (durationValue <= 0)
+                throw new ArgumentException("El valor de duración debe ser mayor que cero.", nameof(durationValue));
+
+            DateTime endDate;
+            switch (durationType)
+            {
+                case Constants.Day:
+                    endDate = dateTimeStart.AddDays(durationValue);
+                    break;
+                case Constants.Month:
+                    endDate = dateTimeStart.AddMonths(durationValue);
+                    break;
+                case Constants.Unlimited:
+                    endDate = dateTimeStart.AddDays(365);
+                    break;
+                default:
+                    throw new ArgumentException("Tipo de duración no válido.", nameof(durationType));
+            }
+
+            return endDate;
+        }
+     
     }
 }

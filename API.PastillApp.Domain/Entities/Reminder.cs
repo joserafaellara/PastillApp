@@ -48,7 +48,7 @@ namespace API.PastillApp.Domain.Entities
         public int IntakeTimeNumber { get; set; }
 
         [Required]
-        public int IntakeTimeText { get; set; }
+        public string IntakeTimeText { get; set; }
 
         public DateTime? EndDateTime { get; set; }
 
