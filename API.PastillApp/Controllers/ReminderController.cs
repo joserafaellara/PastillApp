@@ -90,5 +90,19 @@ namespace API.PastillApp.Controllers
                 return BadRequest($"Error al eliminar el recordatorio: {ex.Message}");
             }
         }
+
+        [HttpGet("{reminderId}/reminderlogs")]
+        public async Task<IActionResult> GetReminderLogsByReminderId(int reminderId)
+        {
+            try
+            {
+                var result = await _reminderService.GetReminderLogsByReminderId(reminderId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error al obtener los logs del recordatorio: {ex.Message}");
+            }
+        }
     }
 }

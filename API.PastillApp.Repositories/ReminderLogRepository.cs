@@ -122,6 +122,23 @@ namespace API.PastillApp.Repositories
                 throw;
             }
         }
+
+        public async Task<List<ReminderLog>> GetbyReminderId(int reminderId)
+        {
+            try
+            {
+                return await _context.ReminderLogs.Where(rl => rl.ReminderId == reminderId)
+                                    .Include(rl => rl.Reminder)
+                                        .ThenInclude(r => r.Medicine)
+                                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al buscar logs del recordatorio: {ex.Message}");
+                throw;
+            }
+          
+        }
     }
 
 }

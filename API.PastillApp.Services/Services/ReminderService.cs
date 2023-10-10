@@ -5,6 +5,7 @@ using API.PastillApp.Repositories.Interface;
 using API.PastillApp.Services.DTOs;
 using API.PastillApp.Services.Interfaces;
 using AutoMapper;
+using System.Runtime.Serialization.Formatters;
 
 namespace API.PastillApp.Services.Services
 {
@@ -81,6 +82,44 @@ namespace API.PastillApp.Services.Services
         {
             throw new NotImplementedException();
         }
+
+        public async Task<ReminderLogsDTO> GetReminderLogsByReminderId(int reminderId)
+        {
+            try
+            {
+                var response = await _reminderLogsRepository.GetbyReminderId(reminderId);
+                if (response == null)
+                    return null;
+
+                var reminderLogsDTO = new ReminderLogsDTO()
+                {
+                    LogsList = new List<ReminderLogDTO>()
+                };
+                               
+                foreach (var log in response)
+                {
+                    var logDTO = new ReminderLogDTO()
+                    {
+                        ReminderLogId = log.ReminderLogId,
+                        ReminderId = log.ReminderId, 
+                        DateTime = log.DateTime,
+                        Taken = log.Taken,
+                        MedicineId = log.Reminder.MedicineId,
+                        Name = log.Reminder.Medicine.Name,
+                        Dosage = log.Reminder.Medicine.Dosage,
+                        Presentation = log.Reminder.Presentation, 
+                        Observation = log.Reminder.Observation
+    };
+                    reminderLogsDTO.LogsList.Add(logDTO);
+                }
+                return reminderLogsDTO;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            };
+        }
+
         private async Task createReminderLogs(DateTime dateTimeStart, TimeSpan frecuency, DateTime dateExpired, int reminderId)
         {
             List<ReminderLog> reminderLogs = new List<ReminderLog>();
@@ -153,6 +192,7 @@ namespace API.PastillApp.Services.Services
 
             return endDate;
         }
-     
+
+
     }
 }

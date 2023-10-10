@@ -12,6 +12,6 @@ namespace API.PastillApp.Services.Interfaces
         Task<ResponseDTO> CreateReminder(CreateReminderDTO reminder);
         Task<ResponseDTO> UpdateReminder(Reminder reminder);
         Task<ResponseDTO> DeleteReminder(int reminderId);
-
+        Task<ReminderLogsDTO> GetReminderLogsByReminderId(int reminderId);
     }
 }
