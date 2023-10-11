@@ -52,9 +52,6 @@ namespace API.PastillApp.Domain.Entities
 
         public DateTime? EndDateTime { get; set; }
 
-        public List<ReminderDateTime>? ReminderDateTimes { get; set; }
-
-
         public virtual User? User { get; set; }
         public virtual Medicine? Medicine{ get; set; }
 

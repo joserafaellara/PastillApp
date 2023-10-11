@@ -125,7 +125,7 @@ namespace API.PastillApp.Services.Services
             List<ReminderLog> reminderLogs = new List<ReminderLog>();
             DateTime currentDateTime = dateTimeStart;
 
-            while (currentDateTime <= dateExpired)
+            while (currentDateTime < dateExpired)
             {
                 reminderLogs.Add(new ReminderLog
                 {
@@ -157,7 +157,7 @@ namespace API.PastillApp.Services.Services
                     frecuency = TimeSpan.FromDays(7 * frequencyValue);
                     break;
                 case Constants.Month:
-                    frecuency = TimeSpan.FromDays(30 * frequencyValue);
+                    frecuency = TimeSpan.FromDays(30 * frequencyValue); // mejorar
                     break;
                 default:
                     throw new ArgumentException("Tipo de duración no válido.", nameof(frequencyType));
@@ -179,6 +179,9 @@ namespace API.PastillApp.Services.Services
             {
                 case Constants.Day:
                     endDate = dateTimeStart.AddDays(durationValue);
+                    break;
+                case Constants.Week:
+                    endDate = dateTimeStart.AddDays(7*durationValue);
                     break;
                 case Constants.Month:
                     endDate = dateTimeStart.AddMonths(durationValue);
