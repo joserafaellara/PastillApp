@@ -10,6 +10,7 @@ namespace API.PastillApp.Services.Interfaces
         Task<ResponseDTO> DeleteToken(string token);
         Task<Token> GetTokenByUserEmail(string userEmail);
         Task<IEnumerable<Token>> GetAllTokens();
+        Task<ResponseDTO> SendMessage(string Title, string Body, string token);
 
     }
 }
