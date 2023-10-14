@@ -56,7 +56,7 @@ public class TokenService : ITokenService
                     }
 
                     existingToken.UserId = user.UserId;
-
+                    existingToken.UserEmail = user.Email;
                     await _tokenRepository.UpdateToken(existingToken);
                 }
 
