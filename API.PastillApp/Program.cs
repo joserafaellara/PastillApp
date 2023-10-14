@@ -3,6 +3,9 @@ using API.PastillApp.Repositories.Interface;
 using API.PastillApp.Services.Interfaces;
 using API.PastillApp.Services.Mapper;
 using API.PastillApp.Services.Services;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+using Microsoft.AspNetCore.Builder.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +16,15 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+     var firebase = FirebaseApp.Create(new AppOptions
+    {
+        Credential = GoogleCredential.FromFile("Properties/Firebase.json")
+    });
+
+    builder.Services.AddSingleton(firebase);
+
 
 builder.Services.AddDbContext<PastillAppContext>(options =>
 {

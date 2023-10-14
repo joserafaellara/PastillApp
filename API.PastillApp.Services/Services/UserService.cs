@@ -1,5 +1,4 @@
 ﻿using API.PastillApp.Domain.Entities;
-using API.PastillApp.Repositories;
 using API.PastillApp.Repositories.Interface;
 using API.PastillApp.Services.DTOs;
 using API.PastillApp.Services.Interfaces;
@@ -11,10 +10,12 @@ namespace API.PastillApp.Services.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-        public UserService(IUserRepository userRepository, IMapper mapper)
+        private readonly ITokenService _tokenService;
+        public UserService(IUserRepository userRepository, IMapper mapper, ITokenService tokenService)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            _tokenService = tokenService;
         }
         public async Task<ResponseDTO> CreateUser(CreateUserDTO user)
         {
@@ -22,10 +23,8 @@ namespace API.PastillApp.Services.Services
             {
                 var newUser = _mapper.Map<User>(user);
 
-                // Agregar el nuevo usuario a la base de datos (asumiendo que tienes un UserRepository)
                 await _userRepository.AddUser(newUser);
 
-                // Crear y devolver una respuesta de éxito
                 var response = new ResponseDTO
                 {
                     isSuccess = true,
@@ -36,11 +35,10 @@ namespace API.PastillApp.Services.Services
             }
             catch (Exception ex)
             {
-                // En caso de error, crear y devolver una respuesta de error
                 var errorResponse = new ResponseDTO
                 {
                     isSuccess = false,
-                    message = "Error al crear el usuario",
+                    message = "Error al crear el usuario : " + ex.Message,
                 };
 
                 return errorResponse;
@@ -50,6 +48,18 @@ namespace API.PastillApp.Services.Services
         public Task<ResponseDTO> DeleteUser(int userId)
         {
             throw new NotImplementedException();
+        }
+
+        public Task<ResponseDTO> EmergencyContactRequest(EmergencyContactRequestDTO request)
+        {
+            var user = GetUserByEmail(request.UserMail).Result;
+
+            var emergencyContactToken = _tokenService.GetTokenByUserEmail(request.ContactEmergencyMail).Result;
+            if (emergencyContactToken == null)
+                throw new Exception("Contacto de emergencia no encontrado");
+            string body = user.Name + " " + user.LastName + " ha solicitado que seas su contacto de emergencia";
+
+            return _tokenService.SendMessage("Solicitud de contacto de Emergencia", body, emergencyContactToken.DeviceToken!);
         }
 
         public async Task<List<User>> GetAllUsers()

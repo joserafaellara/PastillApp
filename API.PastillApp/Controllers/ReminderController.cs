@@ -61,7 +61,7 @@ namespace API.PastillApp.Controllers
         }
 
         [HttpPut("{reminderId}")]
-        public async Task<IActionResult> UpdateReminder(int reminderId, Reminder reminder)
+        public async Task<IActionResult> UpdateReminder(int reminderId, Reminder reminder) // DTOOOOOOOOOOOOOO!!!!!!!!!!!!!!!!
         {
             try
             {
