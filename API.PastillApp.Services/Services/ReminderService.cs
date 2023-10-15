@@ -7,6 +7,7 @@ using API.PastillApp.Services.DTOs;
 using API.PastillApp.Services.Interfaces;
 using AutoMapper;
 using System.Runtime.Serialization.Formatters;
+using System.Transactions;
 
 namespace API.PastillApp.Services.Services
 {
@@ -58,7 +59,7 @@ namespace API.PastillApp.Services.Services
                 return new ResponseDTO() { isSuccess = false, message = ex.Message };
             }
         }
-        public Task<ResponseDTO> DeleteReminder(int reminderId)
+        public async Task<ResponseDTO> DeleteReminder(int reminderId)
         {
             throw new NotImplementedException();
         }
@@ -84,7 +85,6 @@ namespace API.PastillApp.Services.Services
                     throw new NullReferenceException();
                 }
                 return response;
-                    
             }
             catch (Exception ex)
             {
