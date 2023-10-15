@@ -141,6 +141,10 @@ namespace API.PastillApp.Services.Services
                     reminderToUpdate.IntakeTimeText = reminder.IntakeTimeText;
                 }
 
+                if(reminderToUpdate.EmergencyAlert != reminder.EmergencyAlert)
+                {
+                    reminderToUpdate.EmergencyAlert = reminder.EmergencyAlert;
+                }
                 await _reminderRepository.UpdateReminder(reminderToUpdate);
                 return new ResponseDTO
                 {

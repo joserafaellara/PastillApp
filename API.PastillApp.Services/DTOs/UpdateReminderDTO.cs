@@ -17,5 +17,6 @@ namespace API.PastillApp.Services.DTOs
         public string? FrequencyText { get; set; }
         public int? IntakeTimeNumber { get; set; }
         public string? IntakeTimeText { get; set; }
+        public bool EmergencyAlert { get; set; }
     }
 }
