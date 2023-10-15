@@ -92,9 +92,71 @@ namespace API.PastillApp.Services.Services
             };
         }
 
-        public Task<ResponseDTO> UpdateReminder(UpdateReminderDTO reminder)
+        public async Task<ResponseDTO> UpdateReminder(UpdateReminderDTO reminder)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var reminderToUpdate = await _reminderRepository.GetReminderById(reminder.ReminderId);
+                if (reminderToUpdate == null)
+                {
+                    return new ResponseDTO
+                    {
+                        isSuccess = false,
+                        message = "Recordatorio no encontrado",
+                    };
+                }
+
+                if (reminder.Quantity.HasValue)
+                {
+                    reminderToUpdate.Quantity = (double)reminder.Quantity;
+                }
+
+                if (!string.IsNullOrWhiteSpace(reminder.Presentation))
+                {
+                    reminderToUpdate.Presentation = reminder.Presentation;
+                }
+
+                if (reminder.DateTimeStart.HasValue)
+                {
+                    reminderToUpdate.DateTimeStart = (DateTime)reminder.DateTimeStart;
+                }
+               
+                if (reminder.FrequencyNumber.HasValue)
+                {
+                    reminderToUpdate.FrequencyNumber = (int)reminder.FrequencyNumber;
+                }
+
+                if (!string.IsNullOrWhiteSpace(reminder.FrequencyText))
+                {
+                    reminderToUpdate.FrequencyText = reminder.FrequencyText;
+                }
+
+                if (reminder.IntakeTimeNumber.HasValue)
+                {
+                    reminderToUpdate.IntakeTimeNumber = (int)reminder.IntakeTimeNumber;
+                }
+
+                if (!string.IsNullOrWhiteSpace(reminder.IntakeTimeText))
+                {
+                    reminderToUpdate.IntakeTimeText = reminder.IntakeTimeText;
+                }
+
+                await _reminderRepository.UpdateReminder(reminderToUpdate);
+                return new ResponseDTO
+                {
+                    isSuccess = true,
+                    message = "Recordatorio actualizado",
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al actualizar el Recordatorio: {ex.Message}");
+                return new ResponseDTO
+                {
+                    isSuccess = false,
+                    message = "Error al actualizar el recordatorio",
+                };
+            }
         }
 
         public async Task<ReminderLogsDTO> GetReminderLogsByReminderId(int reminderId)
