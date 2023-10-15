@@ -15,7 +15,7 @@ namespace API.PastillApp.Domain.Entities
         public int TokenId { get; set; }
 
         [Required]
-        [MaxLength(100)]
+        [MaxLength(200)]
         public string? DeviceToken { get; set; }
 
         [MaxLength(50)]

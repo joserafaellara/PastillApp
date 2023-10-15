@@ -92,7 +92,7 @@ namespace API.PastillApp.Services.Services
             };
         }
 
-        public Task<ResponseDTO> UpdateReminder(Reminder reminder)
+        public Task<ResponseDTO> UpdateReminder(UpdateReminderDTO reminder)
         {
             throw new NotImplementedException();
         }

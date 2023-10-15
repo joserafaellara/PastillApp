@@ -1,21 +1,25 @@
 ﻿using API.PastillApp.Domain.Entities;
-using API.PastillApp.Repositories;
 using API.PastillApp.Repositories.Interface;
 using API.PastillApp.Services.DTOs;
 using API.PastillApp.Services.Interfaces;
 using AutoMapper;
+using FirebaseAdmin;
+using FirebaseAdmin.Messaging;
 
-namespace API.PastillApp.Services.Services { 
-public class TokenService : ITokenService
+namespace API.PastillApp.Services.Services
+{
+    public class TokenService : ITokenService
 {
     private readonly ITokenRepository _tokenRepository;
     private readonly IUserRepository _userRepository;
+    private readonly FirebaseApp _firebaseApp;
     private readonly IMapper _mapper;
 
-    public TokenService(ITokenRepository tokenRepository, IUserRepository userRepository, IMapper mapper)
+    public TokenService(ITokenRepository tokenRepository, IUserRepository userRepository, IMapper mapper, FirebaseApp firebaseApp)
     {
         _tokenRepository = tokenRepository;
         _userRepository = userRepository;
+        _firebaseApp = firebaseApp;
         _mapper = mapper;
     }
 
@@ -56,7 +60,7 @@ public class TokenService : ITokenService
                     }
 
                     existingToken.UserId = user.UserId;
-
+                    existingToken.UserEmail = user.Email;
                     await _tokenRepository.UpdateToken(existingToken);
                 }
 
@@ -142,7 +146,31 @@ public class TokenService : ITokenService
                 // Maneja el error según tus necesidades, por ejemplo, lanza una excepción personalizada o devuelve una lista vacía.
                 throw;
             }
-        } 
+        }
 
+        public async Task<ResponseDTO> SendMessage(string title, string body, string token)
+        {
+            var messaging = FirebaseMessaging.GetMessaging(_firebaseApp);
+
+            var message = new Message
+            {
+                Notification = new Notification
+                {
+                    Title = title,
+                    Body = body
+                },
+                Token = token
+            };
+
+            try
+            {
+                string response = await messaging.SendAsync(message);
+                return new ResponseDTO { isSuccess = true, message =  response };
+            }
+            catch(FirebaseMessagingException e)
+            {
+                return new ResponseDTO { isSuccess = false, message = e.Message };
+            }
+        }
     }
 }

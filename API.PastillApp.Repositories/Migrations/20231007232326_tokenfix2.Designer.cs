@@ -4,6 +4,7 @@ using API.PastillApp.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.PastillApp.Repositories.Migrations
 {
     [DbContext(typeof(PastillAppContext))]
-    partial class PastillAppContextModelSnapshot : ModelSnapshot
+    [Migration("20231007232326_tokenfix2")]
+    partial class tokenfix2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -121,9 +124,8 @@ namespace API.PastillApp.Repositories.Migrations
                     b.Property<int>("IntakeTimeNumber")
                         .HasColumnType("int");
 
-                    b.Property<string>("IntakeTimeText")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("IntakeTimeText")
+                        .HasColumnType("int");
 
                     b.Property<int>("MedicineId")
                         .HasColumnType("int");

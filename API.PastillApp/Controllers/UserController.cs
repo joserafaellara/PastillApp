@@ -79,7 +79,15 @@ namespace API.PastillApp.Controllers
             {
                 return BadRequest($"Error al eliminar el usuario: {ex.Message}");
             }
-
         }
+
+        [HttpPost("contact-emergency")]
+        public async Task<IActionResult> EmergencyContactRequest(EmergencyContactRequestDTO request)
+        {
+            var result = await _userService.EmergencyContactRequest(request);
+            return result.isSuccess ? Ok() : BadRequest(result);
+        }
+
+
     }
 }
