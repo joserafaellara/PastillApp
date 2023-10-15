@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace API.PastillApp.Repositories
 {
-    public class  ReminderRepository : IReminderRepository
+    public class ReminderRepository : IReminderRepository
     {
         private readonly PastillAppContext _context;
 
@@ -67,7 +67,7 @@ namespace API.PastillApp.Repositories
         {
             try
             {
-                return await _context.Reminders.FirstOrDefaultAsync(r => r.UserId == userId );
+                return await _context.Reminders.FirstOrDefaultAsync(r => r.UserId == userId);
             }
             catch (Exception ex)
             {
@@ -108,25 +108,12 @@ namespace API.PastillApp.Repositories
         // DELETE (Delete a reminder by ID)
         public async Task DeleteReminder(int reminderId)
         {
-            try
-            {
-                var reminder = _context.Reminders.FirstOrDefault(r => r.ReminderId == reminderId);
-                if (reminder != null)
-                {
-                    _context.Reminders.Remove(reminder);
-                    await _context.SaveChangesAsync();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error al eliminar el recordatorio: {ex.Message}");
-                throw;
-            }
+            throw new NotImplementedException();
         }
 
-        public async Task BeginTransaction()
+        public Task BeginTransaction()
         {
-            await _context.Database.BeginTransactionAsync();
+            throw new NotImplementedException();
         }
     }
 }

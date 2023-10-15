@@ -2,10 +2,12 @@
 using API.PastillApp.Domain.Entities;
 using API.PastillApp.Repositories;
 using API.PastillApp.Repositories.Interface;
+using API.PastillApp.Repositories.Migrations;
 using API.PastillApp.Services.DTOs;
 using API.PastillApp.Services.Interfaces;
 using AutoMapper;
 using System.Runtime.Serialization.Formatters;
+using System.Transactions;
 
 namespace API.PastillApp.Services.Services
 {
@@ -57,7 +59,7 @@ namespace API.PastillApp.Services.Services
                 return new ResponseDTO() { isSuccess = false, message = ex.Message };
             }
         }
-        public Task<ResponseDTO> DeleteReminder(int reminderId)
+        public async Task<ResponseDTO> DeleteReminder(int reminderId)
         {
             throw new NotImplementedException();
         }
@@ -74,10 +76,22 @@ namespace API.PastillApp.Services.Services
             return reminder;
         }
 
-        public Task<Reminder> GetReminderByUserId(int userId)
+        public async Task<Reminder> GetReminderByUserId(int userId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var response = await _reminderRepository.GetReminderByUserId(userId);
+                if (response == null){
+                    throw new NullReferenceException();
+                }
+                return response;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            };
         }
+
         public Task<ResponseDTO> UpdateReminder(UpdateReminderDTO reminder)
         {
             throw new NotImplementedException();
