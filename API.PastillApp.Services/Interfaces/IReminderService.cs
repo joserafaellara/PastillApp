@@ -10,7 +10,7 @@ namespace API.PastillApp.Services.Interfaces
         Task<Reminder> GetReminderByUserId(int userId);
         Task<List<Reminder>> GetAllReminders();
         Task<ResponseDTO> CreateReminder(CreateReminderDTO reminder);
-        Task<ResponseDTO> UpdateReminder(Reminder reminder);
+        Task<ResponseDTO> UpdateReminder(UpdateReminderDTO reminder);
         Task<ResponseDTO> DeleteReminder(int reminderId);
         Task<ReminderLogsDTO> GetReminderLogsByReminderId(int reminderId);
     }

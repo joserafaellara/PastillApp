@@ -61,14 +61,14 @@ namespace API.PastillApp.Controllers
         }
 
         [HttpPut("{reminderId}")]
-        public async Task<IActionResult> UpdateReminder(int reminderId, Reminder reminder) // DTOOOOOOOOOOOOOO!!!!!!!!!!!!!!!!
+        public async Task<IActionResult> UpdateReminder(int reminderId, UpdateReminderDTO updateReminderDTO) // DTOOOOOOOOOOOOOO!!!!!!!!!!!!!!!!
         {
             try
             {
-                if (reminderId != reminder.ReminderId)
+                if (reminderId != updateReminderDTO.ReminderId)
                     return BadRequest("ID de recordatorio no coincide.");
 
-                var result = await _reminderService.UpdateReminder(reminder);
+                var result = await _reminderService.UpdateReminder(updateReminderDTO);
                 return result.isSuccess ? Ok(result) : BadRequest(result);
             }
             catch (Exception ex)
