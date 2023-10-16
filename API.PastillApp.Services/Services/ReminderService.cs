@@ -5,6 +5,7 @@ using API.PastillApp.Repositories.Interface;
 using API.PastillApp.Services.DTOs;
 using API.PastillApp.Services.Interfaces;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System.Runtime.Serialization.Formatters;
 
 namespace API.PastillApp.Services.Services
@@ -15,12 +16,14 @@ namespace API.PastillApp.Services.Services
         private readonly IReminderLogsRepository _reminderLogsRepository;
         private readonly PastillAppContext _context;
         private readonly IMapper _mapper;
-        public ReminderService(IReminderRepository reminderRepository, IReminderLogsRepository reminderLogsRepository, IMapper mapper, PastillAppContext pastillAppContext)
+        private readonly ITokenService _tokenService;
+        public ReminderService(IReminderRepository reminderRepository, IReminderLogsRepository reminderLogsRepository, IMapper mapper, PastillAppContext pastillAppContext, ITokenService tokenService)
         {
             _reminderRepository = reminderRepository;
             _reminderLogsRepository = reminderLogsRepository;
             _context = pastillAppContext;
             _mapper = mapper;
+            _tokenService = tokenService;
         }
 
         public async Task<ResponseDTO> CreateReminder(CreateReminderDTO createReminder)
@@ -120,6 +123,57 @@ namespace API.PastillApp.Services.Services
             };
         }
 
+        public async Task SendAlarmNotification(ReminderLog reminderlog)
+        {
+            var mail = await _context.Users
+             .Where(u => u.UserId == reminderlog.Reminder!.UserId)
+             .Select(u => u.Email)
+             .FirstOrDefaultAsync();
+
+            await SendAlarm(mail);
+
+            if(reminderlog.Notificated == true)
+                reminderlog.SecondNotification = true;
+
+            reminderlog.Notificated = true;
+
+            await _reminderLogsRepository.UpdateReminderLog(reminderlog);
+        }
+
+        public async Task SendEmergencyNotification(ReminderLog reminderlog)
+        {
+            var user = await _context.Users
+             .Where(u => u.UserId == reminderlog.Reminder!.UserId)
+             .Include(u => u.EmergencyUser)
+             .FirstOrDefaultAsync();
+
+            if (user.EmergencyUser == null)
+                await SendAlarm(user.Email);
+                
+            await SendEmergencyAlarm(user.EmergencyUser.Email, (user.Name + " " + user.LastName));
+
+        }
+
+        private async Task SendAlarm(string mail)
+        {
+            var token = await _tokenService.GetTokenByUserEmail(mail);
+
+            if (token == null)
+                throw new Exception("No hay token para este user");
+
+            var result = await _tokenService.SendMessage("ALARM", "Hora de tomar tu medicamento", token.DeviceToken!);
+        }
+
+        private async Task SendEmergencyAlarm(string mail, string userName)
+        {
+            var token = await _tokenService.GetTokenByUserEmail(mail);
+
+            if (token == null)
+                throw new Exception("No hay token para este user");
+
+            var result = await _tokenService.SendMessage("EMERGENCY", (userName + " no se ha tomado su medicamento"), token.DeviceToken!);
+        }
+
         private async Task createReminderLogs(DateTime dateTimeStart, TimeSpan frecuency, DateTime dateExpired, int reminderId)
         {
             List<ReminderLog> reminderLogs = new List<ReminderLog>();
@@ -131,7 +185,10 @@ namespace API.PastillApp.Services.Services
                 {
                     ReminderId = reminderId,
                     DateTime = currentDateTime,
-                    Taken = false
+                    Taken = false,
+                    Notificated = false,
+                    SecondNotification = false
+                    
                 });
 
                 currentDateTime = currentDateTime.Add(frecuency);

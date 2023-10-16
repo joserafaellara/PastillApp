@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-WorkerService-7caa2ff6-bfc3-44ff-9a74-b0c97f7031d0</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\API.PastillApp.Domain\API.PastillApp.Domain.csproj" />
+    <ProjectReference Include="..\API.PastillApp.Repositories\API.PastillApp.Repositories.csproj" />
+    <ProjectReference Include="..\API.PastillApp.Services\API.PastillApp.Services.csproj" />
+  </ItemGroup>
+</Project>
