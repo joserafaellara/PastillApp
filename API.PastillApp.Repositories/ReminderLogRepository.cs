@@ -139,6 +139,57 @@ namespace API.PastillApp.Repositories
             }
           
         }
+
+        public async Task<List<ReminderLog>> GetReminderLogsNoTaken()
+        {
+            try
+            {
+                return await _context.ReminderLogs
+                    .Where(rl => rl.Taken == false)
+                    .Include(rl => rl.Reminder)
+                    .OrderBy(rl=> rl.DateTime)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al obtener los logs de recordatorios no tomados: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<List<ReminderLog>> GetReminderLogsNoTakenNotificated()
+        {
+            try
+            {
+                return await _context.ReminderLogs
+                    .Where(rl => rl.Taken == false & rl.Notificated == true)
+                    .Include(rl => rl.Reminder)
+                    .OrderBy(rl => rl.DateTime)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al obtener los logs de recordatorios notificados y no tomados: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<List<ReminderLog>> GetReminderLogsToEmergency()
+        {
+            try
+            {
+                return await _context.ReminderLogs
+                    .Where(rl => rl.Taken == false & rl.SecondNotification == true)
+                    .Include(rl => rl.Reminder)
+                    .OrderBy(rl => rl.DateTime)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al obtener los logs de recordatorios notificados y no tomados: {ex.Message}");
+                throw;
+            }
+        }
     }
 
 }
