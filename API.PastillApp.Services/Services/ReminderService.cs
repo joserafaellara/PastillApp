@@ -229,8 +229,8 @@ namespace API.PastillApp.Services.Services
 
             if (user.EmergencyUser == null)
                 await SendAlarm(user.Email);
-                
-            await SendEmergencyAlarm(user.EmergencyUser.Email, (user.Name + " " + user.LastName));
+            else    
+                await SendEmergencyAlarm(user.EmergencyUser.Email, (user.Name + " " + user.LastName));
 
         }
 

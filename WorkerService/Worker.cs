@@ -1,7 +1,13 @@
 using API.PastillApp.Domain.Entities;
 using API.PastillApp.Repositories.Interface;
 using API.PastillApp.Services.Interfaces;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.Metrics;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace WorkerService
 {

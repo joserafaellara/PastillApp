@@ -159,6 +159,10 @@ namespace API.PastillApp.Services.Services
                     Title = title,
                     Body = body
                 },
+                Data = new Dictionary<string, string>
+                {
+                    { "tipo", "POP" }
+                },
                 Token = token
             };
 

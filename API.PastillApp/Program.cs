@@ -1,3 +1,4 @@
+using API.PastillApp;
 using API.PastillApp.Repositories;
 using API.PastillApp.Repositories.Interface;
 using API.PastillApp.Services.Interfaces;
@@ -32,6 +33,7 @@ builder.Services.AddDbContext<PastillAppContext>(options =>
     //options.UseInMemoryDatabase("PastillAppDB");
 }
     );
+builder.Services.AddHostedService<PastillAppWorker>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
@@ -55,6 +57,9 @@ builder.Services
     .AddTransient<ITokenService, TokenService>();
 #endregion
 
+
+//builder.Services.AddScoped<PastillAppWorker>();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -62,6 +67,7 @@ using (var scope = app.Services.CreateScope())
     var context = scope.ServiceProvider.GetRequiredService<PastillAppContext>();
     context.Database.Migrate();
 }
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -80,4 +86,3 @@ app.MapControllers();
 
 app.Run();
 
-app.Run("http://localhost:8080");
