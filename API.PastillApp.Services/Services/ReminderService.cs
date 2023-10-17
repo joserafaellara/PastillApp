@@ -76,15 +76,45 @@ namespace API.PastillApp.Services.Services
             return reminder;
         }
 
-        public async Task<Reminder> GetReminderByUserId(int userId)
+        public async Task<RemindersByUserIdDTO> GetReminderByUserId(int userId)
         {
             try
             {
                 var response = await _reminderRepository.GetReminderByUserId(userId);
-                if (response == null){
-                    throw new NullReferenceException();
+                if (response == null)
+                {
+                    return null;
                 }
-                return response;
+
+                var remindersByUserId = new RemindersByUserIdDTO()
+                {
+                    RemindersByUserId = new List<ReminderDTO>()
+                };
+
+                foreach (var reminder in response)
+                {
+                    var reminderDTO = new ReminderDTO()
+                    {
+                        ReminderId = reminder.ReminderId,
+                        UserId = reminder.UserId,
+                        MedicineId = reminder.MedicineId,
+                        Quantity = reminder.Quantity,
+                        Presentation = reminder.Presentation,
+                        DateTimeStart = reminder.DateTimeStart,
+                        FrequencyNumber = reminder.FrequencyNumber,
+                        FrequencyText = reminder.FrequencyText,
+                        EmergencyAlert = reminder.EmergencyAlert,
+                        Observation = reminder.Observation,
+                        IntakeTimeNumber = reminder.IntakeTimeNumber,
+                        IntakeTimeText = reminder.IntakeTimeText,
+                        EndDateTime = reminder.EndDateTime,
+                        User = getUserById(reminder.UserId),
+                        Medicine = getMedicineById(reminder.MedicineId),
+
+                    };
+                    remindersByUserId.RemindersByUserId.Add(reminderDTO);
+                }
+                return remindersByUserId;
             }
             catch (Exception ex)
             {
@@ -120,7 +150,7 @@ namespace API.PastillApp.Services.Services
                 {
                     reminderToUpdate.DateTimeStart = (DateTime)reminder.DateTimeStart;
                 }
-               
+
                 if (reminder.FrequencyNumber.HasValue)
                 {
                     reminderToUpdate.FrequencyNumber = (int)reminder.FrequencyNumber;
@@ -141,7 +171,7 @@ namespace API.PastillApp.Services.Services
                     reminderToUpdate.IntakeTimeText = reminder.IntakeTimeText;
                 }
 
-                if(reminderToUpdate.EmergencyAlert != reminder.EmergencyAlert)
+                if (reminderToUpdate.EmergencyAlert != reminder.EmergencyAlert)
                 {
                     reminderToUpdate.EmergencyAlert = reminder.EmergencyAlert;
                 }
@@ -175,21 +205,21 @@ namespace API.PastillApp.Services.Services
                 {
                     LogsList = new List<ReminderLogDTO>()
                 };
-                               
+
                 foreach (var log in response)
                 {
                     var logDTO = new ReminderLogDTO()
                     {
                         ReminderLogId = log.ReminderLogId,
-                        ReminderId = log.ReminderId, 
+                        ReminderId = log.ReminderId,
                         DateTime = log.DateTime,
                         Taken = log.Taken,
                         MedicineId = log.Reminder.MedicineId,
                         Name = log.Reminder.Medicine.Name,
                         Dosage = log.Reminder.Medicine.Dosage,
-                        Presentation = log.Reminder.Presentation, 
+                        Presentation = log.Reminder.Presentation,
                         Observation = log.Reminder.Observation
-    };
+                    };
                     reminderLogsDTO.LogsList.Add(logDTO);
                 }
                 return reminderLogsDTO;
@@ -216,7 +246,7 @@ namespace API.PastillApp.Services.Services
 
                 currentDateTime = currentDateTime.Add(frecuency);
             }
-           
+
             await _reminderLogsRepository.AddReminderLogs(reminderLogs);
 
         }
@@ -261,7 +291,7 @@ namespace API.PastillApp.Services.Services
                     endDate = dateTimeStart.AddDays(durationValue);
                     break;
                 case Constants.Week:
-                    endDate = dateTimeStart.AddDays(7*durationValue);
+                    endDate = dateTimeStart.AddDays(7 * durationValue);
                     break;
                 case Constants.Month:
                     endDate = dateTimeStart.AddMonths(durationValue);
@@ -275,7 +305,16 @@ namespace API.PastillApp.Services.Services
 
             return endDate;
         }
+        private string getMedicineById(int medicineId)
+        {
+           var medicine = _context.Medicines.FirstOrDefault(m => m.MedicineId == medicineId);
+            return medicine.Name;
+        }
 
-
+        private string getUserById(int userId)
+        {
+            var user = _context.Users.FirstOrDefault(m => m.UserId == userId);
+            return user.Name;
+        }
     }
 }

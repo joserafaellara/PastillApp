@@ -63,17 +63,20 @@ namespace API.PastillApp.Repositories
         }
 
         // READ (Get a reminder by User ID.)
-        public async Task<Reminder> GetReminderByUserId(int userId)
+        public async Task<List<Reminder>> GetReminderByUserId(int userId)
         {
             try
             {
-                return await _context.Reminders.FirstOrDefaultAsync(r => r.UserId == userId);
+                return await _context.Reminders
+                    .Where(r => r.UserId == userId)
+                    .ToListAsync();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al obtener el recordatorio por Id de Usuario: {ex.Message}");
+                Console.WriteLine($"Error al obtener los recordatorios por Id de Usuario: {ex.Message}");
                 throw;
             }
+
         }
 
         // READ (get all the reminders)
@@ -115,5 +118,6 @@ namespace API.PastillApp.Repositories
         {
             throw new NotImplementedException();
         }
+    
     }
 }
