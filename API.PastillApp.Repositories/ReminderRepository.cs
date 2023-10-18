@@ -1,6 +1,7 @@
 ﻿using API.PastillApp.Domain.Entities;
 using API.PastillApp.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -109,15 +110,36 @@ namespace API.PastillApp.Repositories
         }
 
         // DELETE (Delete a reminder by ID)
-        public async Task DeleteReminder(int reminderId)
+        public async Task DeleteReminder(int reminderId, List<ReminderLog> reminderLogs)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var reminder = _context.Reminders.FirstOrDefault(r => r.ReminderId == reminderId);
+                if (reminder != null)
+                {
+                    while (!reminderLogs.IsNullOrEmpty())
+                    {
+                        var reminderLog = reminderLogs.First();
+                        _context.ReminderLogs.Remove(reminderLog);
+                        reminderLogs.Remove(reminderLog);
+                    }
+
+                    _context.Reminders.Remove(reminder);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al eliminar un usuario: {ex.Message}");
+                throw;
+            }
         }
 
         public Task BeginTransaction()
         {
             throw new NotImplementedException();
         }
-    
+
+
     }
 }

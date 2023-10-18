@@ -8,6 +8,7 @@ using API.PastillApp.Services.Interfaces;
 using AutoMapper;
 using System.Runtime.Serialization.Formatters;
 using System.Transactions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace API.PastillApp.Services.Services
 {
@@ -61,7 +62,25 @@ namespace API.PastillApp.Services.Services
         }
         public async Task<ResponseDTO> DeleteReminder(int reminderId)
         {
-            throw new NotImplementedException();
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                var reminderLogs = await _reminderLogsRepository.GetbyReminderId(reminderId);
+
+                await _reminderRepository.DeleteReminder(reminderId, reminderLogs.ToList());
+
+                transaction.Commit();
+                return new ResponseDTO() { isSuccess = true };
+                
+            }
+            catch (Exception ex)
+            {
+                // Error inesperado
+                transaction.Rollback();
+                return new ResponseDTO() { isSuccess = false, message = ex.Message };
+            }
         }
 
         public async Task<List<Reminder>> GetAllReminders()
