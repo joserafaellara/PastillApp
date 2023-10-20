@@ -83,37 +83,38 @@ namespace API.PastillApp.Services.Services
 
 
         public async Task<ResponseDTO> DeleteToken(string tokenValue)
-    {
-        try
         {
-            var tokenToDelete = await _tokenRepository.GetTokenByValue(tokenValue);
-            if (tokenToDelete == null)
+            try
             {
+                var tokenToDelete = await _tokenRepository.GetTokenByValue(tokenValue);
+                if (tokenToDelete == null)
+                {
+                    return new ResponseDTO
+                    {
+                        isSuccess = false,
+                        message = "Token no encontrado",
+                    };
+                }
+
+                await _tokenRepository.DeleteToken(tokenToDelete);
+
+                return new ResponseDTO
+                {
+                    isSuccess = true,
+                    message = "Token eliminado con éxito",
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al eliminar el token: {ex.Message}");
                 return new ResponseDTO
                 {
                     isSuccess = false,
-                    message = "Token no encontrado",
+                    message = "Error al eliminar el token",
                 };
             }
-
-            await _tokenRepository.DeleteToken(tokenToDelete);
-
-            return new ResponseDTO
-            {
-                isSuccess = true,
-                message = "Token eliminado con éxito",
-            };
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error al eliminar el token: {ex.Message}");
-            return new ResponseDTO
-            {
-                isSuccess = false,
-                message = "Error al eliminar el token",
-            };
-        }
-    }
+
 
         public async Task<Token> GetTokenByUserEmail(string userEmail)
         {
