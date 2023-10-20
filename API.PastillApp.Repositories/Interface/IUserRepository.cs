@@ -28,5 +28,6 @@ namespace API.PastillApp.Repositories.Interface
         Task DeleteUser(int userId);
         Task<List<EmergencyContactRequest>> GetRecibedRequest(string userMail);
         Task UpdateRequest(int requestId, bool accept);
+        Task CreateRequest(EmergencyContactRequest request);
     }
 }

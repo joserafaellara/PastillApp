@@ -123,5 +123,11 @@ namespace API.PastillApp.Repositories
             _context.Update(request);
             await _context.SaveChangesAsync();
         }
+
+        public async Task CreateRequest(EmergencyContactRequest request)
+        {
+            _context.Add(request);
+            await _context.SaveChangesAsync();
+        }
     }
 }
