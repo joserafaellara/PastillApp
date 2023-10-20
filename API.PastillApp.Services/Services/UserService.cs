@@ -50,6 +50,22 @@ namespace API.PastillApp.Services.Services
             throw new NotImplementedException();
         }
 
+        public async Task<EmergencyRequestListDTO> EmergencyContactRecibedRequest(string userMail)
+        {
+            var result = await _userRepository.GetRecibedRequest(userMail);
+            if (result.Count == 0)
+                return null;
+
+            var list = new EmergencyRequestListDTO { EmergencyRequestList = new List<EmergencyResquestDTO>() };
+            foreach (var item in result)
+            {
+                list.EmergencyRequestList.Add(new EmergencyResquestDTO { 
+                    EmergencyRequestId = item.EmergencyContactRequestId, Name = $"{item.UserRequest.Name} {item.UserRequest.LastName}" 
+                });
+            }
+            return list;
+        }
+
         public Task<ResponseDTO> EmergencyContactRequest(EmergencyContactRequestDTO request)
         {
             var user = GetUserByEmail(request.UserMail).Result;
@@ -60,6 +76,25 @@ namespace API.PastillApp.Services.Services
             string body = user.Name + " " + user.LastName + " ha solicitado que seas su contacto de emergencia";
 
             return _tokenService.SendMessage("Solicitud de contacto de Emergencia", body, emergencyContactToken.DeviceToken!);
+        }
+
+        public async Task<ResponseDTO> EmergencyContactResponse(EmergencyContactResponseDTO request)
+        {
+            var response = new ResponseDTO();
+
+            try
+            {
+                await _userRepository.UpdateRequest(request.EmergencyRequestId, request.Accept);
+
+                response.isSuccess = true;
+                return response;
+            }
+            catch(Exception ex) 
+            {
+                response.isSuccess = false;
+                response.message = ex.Message;
+                return response;
+            }
         }
 
         public async Task<List<User>> GetAllUsers()
