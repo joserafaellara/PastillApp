@@ -29,5 +29,6 @@ namespace API.PastillApp.Repositories.Interface
         Task<List<EmergencyContactRequest>> GetRecibedRequest(string userMail);
         Task UpdateRequest(int requestId, bool accept);
         Task CreateRequest(EmergencyContactRequest request);
+        Task<EmergencyContactRequest> GetEmergencyRequestById(int id);
     }
 }

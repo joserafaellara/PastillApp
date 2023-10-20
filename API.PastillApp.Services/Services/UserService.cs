@@ -88,9 +88,20 @@ namespace API.PastillApp.Services.Services
 
             try
             {
-                var token = await _tokenService.GetTokenByUserEmail(request.UserMail);
+                if (request.Accept) {
+                    var token = await _tokenService.GetTokenByUserEmail(request.UserMail);
+                    var emergencyRequest = await _userRepository.GetEmergencyRequestById(request.EmergencyRequestId);
+                    var user = await _userRepository.GetUserByEmail(emergencyRequest.UserRequest.Email);
+                    var emergencyUser = await _userRepository.GetUserById(emergencyRequest.UserAnswerId);
+
+                    user.EmergencyUserId = emergencyUser.UserId;
+                    user.EmergencyUser = emergencyUser;
+
+                    await _userRepository.UpdateUser(user);
+                    await _tokenService.SendMessage("Solicitud ContactoEmergencia", emergencyUser.Name +" ha aceptado tu solicitud!", token.DeviceToken);
+                }
+
                 await _userRepository.UpdateRequest(request.EmergencyRequestId, request.Accept);
-                await _tokenService.SendMessage("Solicitud ContactoEmergencia" , "Tu contacto de emergencia ha sido agregado!", token.DeviceToken);
                 response.isSuccess = true;
                 return response;
             }
