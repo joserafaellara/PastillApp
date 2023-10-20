@@ -21,5 +21,6 @@ namespace API.PastillApp.Repositories
         public DbSet<ReminderLog> ReminderLogs { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Token> Tokens { get; set; }
+        public DbSet<EmergencyContactRequest> EmergencyContactRequests { get; set; }
     }
 }

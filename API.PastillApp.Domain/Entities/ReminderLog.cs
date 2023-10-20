@@ -26,6 +26,7 @@ namespace API.PastillApp.Domain.Entities
 
         public bool Notificated { get; set; }
         public bool SecondNotification { get; set; }
+        
         public virtual Reminder? Reminder { get; set; }
 
     }

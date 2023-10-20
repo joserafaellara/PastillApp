@@ -108,5 +108,20 @@ namespace API.PastillApp.Repositories
                 throw;
             }
         }
+
+        public async Task<List<EmergencyContactRequest>> GetRecibedRequest(string userMail)
+        {
+            var userId = _context.Users.Where(u => u.Email == userMail).Select(u => u.UserId).FirstOrDefault();
+
+            return await _context.EmergencyContactRequests.Where(ecr => ecr.UserAnswerId == userId).Include(ucr => ucr.UserRequest).ToListAsync();
+        }
+
+        public async Task UpdateRequest(int requestId, bool accept)
+        {
+            var request = _context.EmergencyContactRequests.FirstOrDefault(ecr => ecr.EmergencyContactRequestId == requestId);
+            request.Accept = accept;
+            _context.Update(request);
+            await _context.SaveChangesAsync();
+        }
     }
 }

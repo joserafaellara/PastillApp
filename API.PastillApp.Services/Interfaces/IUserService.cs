@@ -13,5 +13,7 @@ namespace API.PastillApp.Services.Interfaces
         Task<ResponseDTO> UpdateUser(UpdateUserDTO user);
         Task<ResponseDTO> DeleteUser(int userId);
         Task<ResponseDTO> EmergencyContactRequest(EmergencyContactRequestDTO request);
+        Task<EmergencyRequestListDTO> EmergencyContactRecibedRequest(string userMail);
+        Task<ResponseDTO> EmergencyContactResponse(EmergencyContactResponseDTO request);
     }
 }

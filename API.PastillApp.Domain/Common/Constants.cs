@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace API.PastillApp.Domain.Common
+﻿namespace API.PastillApp.Domain.Common
 {
     public class Constants
     {
@@ -14,7 +7,6 @@ namespace API.PastillApp.Domain.Common
         public const string Week = "WEEK";
         public const string Month = "MONTH";
         public const string Unlimited = "UNLIMITED";
-
 
     }
 }
