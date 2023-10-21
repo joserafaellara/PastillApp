@@ -104,5 +104,12 @@ namespace API.PastillApp.Controllers
                 return BadRequest($"Error al obtener los logs del recordatorio: {ex.Message}");
             }
         }
+
+        [HttpGet("reminderLogsFromToday/{userId}")]
+        public async Task<IActionResult> GetReminderLogsFromTodayByUserId(int userId)
+        {
+            var reminderLogDTOs = await _reminderService.GetReminderLogsFromTodayByUserId(userId);
+            return Ok(reminderLogDTOs);
+        }
     }
 }

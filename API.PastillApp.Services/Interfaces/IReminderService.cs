@@ -15,5 +15,6 @@ namespace API.PastillApp.Services.Interfaces
         Task<ReminderLogsDTO> GetReminderLogsByReminderId(int reminderId);
         Task SendAlarmNotification(ReminderLog reminderlog);
         Task SendEmergencyNotification(ReminderLog reminderlog);
+        Task<List<ReminderLogDTO>> GetReminderLogsFromTodayByUserId(int userId);
     }
 }
