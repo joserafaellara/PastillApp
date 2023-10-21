@@ -52,6 +52,7 @@ namespace API.PastillApp.Repositories
         // READ (Obtener un usuario por email)
         public async Task<User> GetUserByEmail(string email)
         {
+            email = email.ToLower();
             try
             {
                 return await _context.Users
