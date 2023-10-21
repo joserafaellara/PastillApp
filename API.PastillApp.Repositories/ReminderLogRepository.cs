@@ -190,6 +190,24 @@ namespace API.PastillApp.Repositories
                 throw;
             }
         }
+
+        public async Task<List<ReminderLog>> GetReminderLogsFromTodayByUserId(int userId)
+        {
+            try
+            {
+                DateTime today = DateTime.Today;
+                return await _context.ReminderLogs
+                    .Where(rl => rl.Reminder.UserId == userId && rl.DateTime.Date == today)
+                    .Include(rl => rl.Reminder)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al obtener los logs de recordatorios de hoy para el usuario {userId}: {ex.Message}");
+                throw;
+            }
+        }
+
     }
 
 }

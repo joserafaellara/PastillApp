@@ -9,5 +9,6 @@ namespace API.PastillApp.Repositories.Interface
         Task<List<ReminderLog>> GetReminderLogsNoTakenNotificated();
         Task<List<ReminderLog>> GetReminderLogsToEmergency();
         Task UpdateReminderLog(ReminderLog reminderLog);
+        Task<List<ReminderLog>> GetReminderLogsFromTodayByUserId(int userId);
     }
 }

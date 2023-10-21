@@ -333,6 +333,16 @@ namespace API.PastillApp.Services.Services
             return endDate;
         }
 
+        public async Task<List<ReminderLogDTO>> GetReminderLogsFromTodayByUserId(int userId)
+        {
+            var reminderLogs = await _reminderLogsRepository.GetReminderLogsFromTodayByUserId(userId);
+
+            // Mapea los resultados a ReminderLogDTO
+            var reminderLogDTOs = _mapper.Map<List<ReminderLogDTO>>(reminderLogs);
+
+            return reminderLogDTOs;
+        }
+
 
     }
 }
