@@ -3,6 +3,7 @@ using API.PastillApp.Repositories.Interface;
 using API.PastillApp.Services.DTOs;
 using API.PastillApp.Services.Interfaces;
 using AutoMapper;
+using Newtonsoft.Json.Linq;
 
 namespace API.PastillApp.Services.Services
 {
@@ -88,20 +89,26 @@ namespace API.PastillApp.Services.Services
 
             try
             {
-                if (request.Accept) {
-                    var token = await _tokenService.GetTokenByUserEmail(request.UserMail);
-                    var emergencyRequest = await _userRepository.GetEmergencyRequestById(request.EmergencyRequestId);
-                    var user = await _userRepository.GetUserByEmail(emergencyRequest.UserRequest.Email);
-                    var emergencyUser = await _userRepository.GetUserById(emergencyRequest.UserAnswerId);
+                var token = await _tokenService.GetTokenByUserEmail(request.UserMail);
+                
+                var emergencyRequest = await _userRepository.GetEmergencyRequestById(request.EmergencyRequestId);
+                var user = await _userRepository.GetUserByEmail(emergencyRequest.UserRequest.Email);
+                var emergencyUser = await _userRepository.GetUserById(emergencyRequest.UserAnswerId);
 
+                var token2 = await _tokenService.GetTokenByUserEmail(user.Email);
+
+                if (request.Accept) {
                     user.EmergencyUserId = emergencyUser.UserId;
                     user.EmergencyUser = emergencyUser;
 
                     await _userRepository.UpdateUser(user);
-                    await _tokenService.SendMessage("Solicitud ContactoEmergencia", emergencyUser.Name +" ha aceptado tu solicitud!", token.DeviceToken);
-                }
+                    await _tokenService.SendMessage("Solicitud de contacto de emergencia", emergencyUser.Name +" ha aceptado tu solicitud!", token2.DeviceToken);
+                    await _userRepository.UpdateRequest(request.EmergencyRequestId, request.Accept);
+                } else{
+                    await _userRepository.DeleteEmergencyRequest(request.EmergencyRequestId);
+                    await _tokenService.SendMessage("Solicitud de contacto de emergencia", emergencyUser.Name + " ha rechazado tu solicitud.", token2.DeviceToken);
 
-                await _userRepository.UpdateRequest(request.EmergencyRequestId, request.Accept);
+                }      
                 response.isSuccess = true;
                 return response;
             }
@@ -113,25 +120,26 @@ namespace API.PastillApp.Services.Services
             }
         }
 
-        public async Task<List<User>> GetAllUsers()
+        public async Task<List<GetUserDTO>> GetAllUsers()
         {
-            var user = await _userRepository.GetAllUsers();
-            return user;
+            var users = await _userRepository.GetAllUsers();
+            var userDtos = _mapper.Map<List<GetUserDTO>>(users);
+
+            return userDtos;
         }
 
-        public async Task<User> GetUser(int userId)
+        public async Task<GetUserDTO> GetUser(int userId)
         {
             var user = await _userRepository.GetUserById(userId);
-            return user;
+            return _mapper.Map<GetUserDTO>(user);
         }
 
-        public async Task<User> GetUserByEmail(string email)
+        public async Task<GetUserDTO> GetUserByEmail(string email)
         {
             email = email.ToLower();
 
             var user = await _userRepository.GetUserByEmail(email);
-
-            return user;
+            return _mapper.Map<GetUserDTO>(user);
         }
 
         public async Task<ResponseDTO> UpdateUser(UpdateUserDTO user)
