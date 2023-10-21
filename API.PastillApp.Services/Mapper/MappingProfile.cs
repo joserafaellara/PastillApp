@@ -35,7 +35,7 @@ namespace API.PastillApp.Services.Mapper
             CreateMap<CreateMedicineDTO, Medicine>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Dosage, opt => opt.MapFrom(src => src.Dosage));
-                
+
 
             CreateMap<CreateReminderDTO, Reminder>()
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
@@ -49,7 +49,7 @@ namespace API.PastillApp.Services.Mapper
                 .ForMember(dest => dest.IntakeTimeNumber, opt => opt.MapFrom(src => src.DurationValue))
                 .ForMember(dest => dest.IntakeTimeText, opt => opt.MapFrom(src => src.DurationType))
                 .ForMember(dest => dest.Presentation, opt => opt.MapFrom(src => src.Presentation));
-           
+
 
 
             CreateMap<UpdateUserDTO, User>()
@@ -65,7 +65,10 @@ namespace API.PastillApp.Services.Mapper
                 .ForMember(dest => dest.DeviceToken, opt => opt.Condition(src => !string.IsNullOrWhiteSpace(src.DeviceToken)))
                 .ForMember(dest => dest.UserEmail, opt => opt.Condition(src => !string.IsNullOrWhiteSpace(src.UserEmail)));
 
-        }
 
+            CreateMap<User, GetUserDTO>()
+                .ForMember(dest => dest.EmergencyUser, opt => opt.MapFrom(src => src.EmergencyUser.Email));
+
+        }
     }
 }

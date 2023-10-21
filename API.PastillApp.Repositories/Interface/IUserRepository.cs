@@ -30,5 +30,6 @@ namespace API.PastillApp.Repositories.Interface
         Task UpdateRequest(int requestId, bool accept);
         Task CreateRequest(EmergencyContactRequest request);
         Task<EmergencyContactRequest> GetEmergencyRequestById(int id);
+        Task DeleteEmergencyRequest(int emergencyRequestId);
     }
 }

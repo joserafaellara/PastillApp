@@ -38,7 +38,9 @@ namespace API.PastillApp.Repositories
         {
             try
             {
-                return await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+                return await _context.Users
+                    .Include(u => u.EmergencyUser)
+                    .FirstOrDefaultAsync(u => u.UserId == userId);
             }
             catch (Exception ex)
             {
@@ -133,6 +135,17 @@ namespace API.PastillApp.Repositories
         public async Task<EmergencyContactRequest> GetEmergencyRequestById(int id)
         {
             return await _context.EmergencyContactRequests.Include(x => x.UserRequest).FirstOrDefaultAsync(x => x.EmergencyContactRequestId.Equals(id));
+        }
+
+        //Eliminar Emergency Request
+        public async Task DeleteEmergencyRequest(int emergencyRequestId)
+        {
+            var request = await _context.EmergencyContactRequests.FindAsync(emergencyRequestId);
+            if (request != null)
+            {
+                _context.EmergencyContactRequests.Remove(request);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }
