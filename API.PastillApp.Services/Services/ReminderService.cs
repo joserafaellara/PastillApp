@@ -47,9 +47,11 @@ namespace API.PastillApp.Services.Services
 
                 newReminder.EndDateTime = dateExpired;
 
+                await createReminderLogs(createReminder.DateTimeStart, frequency, dateExpired, newReminder.ReminderId);
+
                 await _reminderRepository.AddReminder(newReminder);
 
-                await createReminderLogs(createReminder.DateTimeStart, frequency, dateExpired, newReminder.ReminderId);
+                
 
                 transaction.Commit(); // Confirmar la transacción
 
@@ -99,6 +101,7 @@ namespace API.PastillApp.Services.Services
         {
             try
             {
+                
                 var reminderToUpdate = await _reminderRepository.GetReminderById(reminder.ReminderId);
                 if (reminderToUpdate == null)
                 {
@@ -112,6 +115,7 @@ namespace API.PastillApp.Services.Services
                 if (reminder.Quantity.HasValue)
                 {
                     reminderToUpdate.Quantity = (double)reminder.Quantity;
+                    
                 }
 
                 if (!string.IsNullOrWhiteSpace(reminder.Presentation))
@@ -148,7 +152,16 @@ namespace API.PastillApp.Services.Services
                 {
                     reminderToUpdate.EmergencyAlert = reminder.EmergencyAlert;
                 }
+
+                if(reminder.Observation != null)
+                {
+                    reminderToUpdate.Observation = reminder.Observation;
+                }
+                
                 await _reminderRepository.UpdateReminder(reminderToUpdate);
+               
+                await UpdateLogs(reminderToUpdate, reminder.KeepPendingLogs);
+
                 return new ResponseDTO
                 {
                     isSuccess = true,
@@ -166,6 +179,48 @@ namespace API.PastillApp.Services.Services
             }
         }
 
+        public async Task<List<ReminderLog>> UpdateLogs(Reminder reminder, Boolean keepPendingLogs)
+        {
+            var dateExpired = calculatedDateExpired(reminder.DateTimeStart, reminder.IntakeTimeText, reminder.IntakeTimeNumber);
+
+            if (reminder.DateTimeStart >= dateExpired || reminder.FrequencyNumber <= 0)
+            {
+                throw new ArgumentException("Los parámetros no son válidos.");
+            }
+
+            TimeSpan frequency = calculateFrequency(reminder.FrequencyText, reminder.FrequencyNumber);
+
+            reminder.EndDateTime = dateExpired;
+
+            var logs = await _reminderLogsRepository.GetbyReminderId(reminder.ReminderId);
+            if (keepPendingLogs == true)
+            {
+                foreach (var log in logs)
+                {
+                    if (log.DateTime >= reminder.DateTimeStart)
+                    {
+                        await _reminderLogsRepository.DeleteReminderLog(log.ReminderLogId);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var log in logs)
+                {
+                    if (log.DateTime >= reminder.DateTimeStart || log.DateTime >= DateTime.Now)
+                    {
+                        await _reminderLogsRepository.DeleteReminderLog(log.ReminderLogId);
+                    }
+
+                }
+            }
+
+            await createReminderLogs(reminder.DateTimeStart, frequency, dateExpired, reminder.ReminderId);
+            
+            
+
+            return logs;
+        }
         public async Task<ReminderLogsDTO> GetReminderLogsByReminderId(int reminderId)
         {
             try
@@ -255,7 +310,7 @@ namespace API.PastillApp.Services.Services
         }
 
         private async Task createReminderLogs(DateTime dateTimeStart, TimeSpan frecuency, DateTime dateExpired, int reminderId)
-        {
+        {   
             List<ReminderLog> reminderLogs = new List<ReminderLog>();
             DateTime currentDateTime = dateTimeStart;
 
