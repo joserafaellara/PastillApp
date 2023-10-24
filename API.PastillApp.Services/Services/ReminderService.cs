@@ -47,11 +47,9 @@ namespace API.PastillApp.Services.Services
 
                 newReminder.EndDateTime = dateExpired;
 
-                await createReminderLogs(createReminder.DateTimeStart, frequency, dateExpired, newReminder.ReminderId);
-
                 await _reminderRepository.AddReminder(newReminder);
 
-                
+                await createReminderLogs(createReminder.DateTimeStart, frequency, dateExpired, newReminder.ReminderId);
 
                 transaction.Commit(); // Confirmar la transacción
 
