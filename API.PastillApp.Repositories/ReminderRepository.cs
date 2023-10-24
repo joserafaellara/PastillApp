@@ -1,5 +1,6 @@
 ﻿using API.PastillApp.Domain.Entities;
 using API.PastillApp.Repositories.Interface;
+using API.PastillApp.Repositories.Migrations;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -43,10 +44,12 @@ namespace API.PastillApp.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al obtener el recordatorio por ID: {ex.Message}");
+                Console.WriteLine($"Error al obtener el recordatorio por Id de Usuario: {ex.Message}");
                 throw;
             }
+
         }
+
 
         // READ (Get a reminder by Medicine ID.)
         public async Task<Reminder> GetReminderByMedicineId(int medicineId)
@@ -63,15 +66,19 @@ namespace API.PastillApp.Repositories
         }
 
         // READ (Get a reminder by User ID.)
-        public async Task<Reminder> GetReminderByUserId(int userId)
+        public async Task<List<Reminder>> GetReminderByUserId(int userId)
         {
+   
             try
             {
-                return await _context.Reminders.FirstOrDefaultAsync(r => r.UserId == userId);
+                return await _context.Reminders
+                    .Where(r => r.UserId == userId)
+                    .Include(r => r.Medicine)
+                    .ToListAsync();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al obtener el recordatorio por Id de Usuario: {ex.Message}");
+                Console.WriteLine($"Error al obtener los recordatorios por ID: {ex.Message}");
                 throw;
             }
         }
