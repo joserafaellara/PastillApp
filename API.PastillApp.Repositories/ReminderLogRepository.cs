@@ -109,6 +109,24 @@ namespace API.PastillApp.Repositories
             }
         }
 
+        public async Task DeleteGroup(List <ReminderLog> reminderLogs)
+        {
+            try
+            {
+                _context.ReminderLogs.RemoveRange(reminderLogs);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al agregar logs del recordatorio: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<List<ReminderLog>> GetStartingFromDate (int reminderId, DateTime date)
+        {
+            return await _context.ReminderLogs.Where(rl => rl.ReminderId == reminderId && rl.DateTime >= date).ToListAsync();
+        }
         public async Task AddReminderLogs(List<ReminderLog> reminderLogs)
         {
             try

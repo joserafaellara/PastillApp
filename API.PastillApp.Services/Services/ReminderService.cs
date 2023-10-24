@@ -179,7 +179,7 @@ namespace API.PastillApp.Services.Services
             }
         }
 
-        public async Task<List<ReminderLog>> UpdateLogs(Reminder reminder, Boolean keepPendingLogs)
+        public async Task UpdateLogs(Reminder reminder, Boolean keepPendingLogs)
         {
             var dateExpired = calculatedDateExpired(reminder.DateTimeStart, reminder.IntakeTimeText, reminder.IntakeTimeNumber);
 
@@ -192,34 +192,18 @@ namespace API.PastillApp.Services.Services
 
             reminder.EndDateTime = dateExpired;
 
-            var logs = await _reminderLogsRepository.GetbyReminderId(reminder.ReminderId);
             if (keepPendingLogs == true)
             {
-                foreach (var log in logs)
-                {
-                    if (log.DateTime >= reminder.DateTimeStart)
-                    {
-                        await _reminderLogsRepository.DeleteReminderLog(log.ReminderLogId);
-                    }
-                }
+                var lista = await _reminderLogsRepository.GetStartingFromDate(reminder.ReminderId, reminder.DateTimeStart);
+                await _reminderLogsRepository.DeleteGroup(lista);
             }
             else
             {
-                foreach (var log in logs)
-                {
-                    if (log.DateTime >= reminder.DateTimeStart || log.DateTime >= DateTime.Now)
-                    {
-                        await _reminderLogsRepository.DeleteReminderLog(log.ReminderLogId);
-                    }
-
-                }
+                var lista = _reminderLogsRepository.GetStartingFromDate(reminder.ReminderId, DateTime.Now);
+                await _reminderLogsRepository.DeleteGroup(lista.Result);
             }
 
             await createReminderLogs(reminder.DateTimeStart, frequency, dateExpired, reminder.ReminderId);
-            
-            
-
-            return logs;
         }
         public async Task<ReminderLogsDTO> GetReminderLogsByReminderId(int reminderId)
         {
