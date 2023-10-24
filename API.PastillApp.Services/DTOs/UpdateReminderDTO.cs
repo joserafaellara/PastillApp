@@ -18,5 +18,7 @@ namespace API.PastillApp.Services.DTOs
         public int? IntakeTimeNumber { get; set; }
         public string? IntakeTimeText { get; set; }
         public bool EmergencyAlert { get; set; }
+        public bool KeepPendingLogs { get; set; }
+        public string? Observation { get; set; }
     }
 }
