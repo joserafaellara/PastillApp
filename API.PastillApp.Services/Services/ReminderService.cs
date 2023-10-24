@@ -81,7 +81,7 @@ namespace API.PastillApp.Services.Services
                 }
                 var reminderLogs = await _reminderLogsRepository.GetStartingFromDate(reminderId, DateTime.Now);
                 await _reminderLogsRepository.DeleteGroup(reminderLogs);
-                await _reminderRepository.DeleteReminder(reminderId);
+                await _reminderRepository.DeleteReminder(response);
 
                 transaction.Commit();
                 return new ResponseDTO() { isSuccess = true };

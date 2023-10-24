@@ -26,7 +26,7 @@ namespace API.PastillApp.Repositories.Interface
         Task UpdateReminder(Reminder reminder);
 
         // DELETE
-        Task DeleteReminder(int reminderId);
+        Task DeleteReminder(Reminder reminder);
         Task BeginTransaction();
     }
 }

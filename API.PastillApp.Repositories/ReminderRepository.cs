@@ -112,10 +112,20 @@ namespace API.PastillApp.Repositories
             }
         }
 
-        // DELETE (Delete a reminder by ID)
-        public async Task DeleteReminder(int reminderId)
+        // DELETE (Delete a reminder)
+        public async Task DeleteReminder(Reminder reminder)
         {
-            throw new NotImplementedException();
+
+            try
+            {
+                _context.Reminders.Remove(reminder);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al agregar el recordatorio: {ex.Message}");
+                throw;
+            }
         }
 
         public Task BeginTransaction()
