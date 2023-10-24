@@ -6,7 +6,6 @@ using API.PastillApp.Repositories.Migrations;
 using API.PastillApp.Services.DTOs;
 using API.PastillApp.Services.Interfaces;
 using AutoMapper;
-using Azure;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.Serialization.Formatters;
 using System.Transactions;
@@ -67,32 +66,7 @@ namespace API.PastillApp.Services.Services
         }
         public async Task<ResponseDTO> DeleteReminder(int reminderId)
         {
-            using var transaction = await _context.Database.BeginTransactionAsync();
-
-            try
-            {
-                var response = await _reminderRepository.GetReminderById(reminderId);
-                if(response == null)
-                {
-                    return new ResponseDTO
-                    {
-                        isSuccess = false,
-                        message = "Recordatorio no encontrado",
-                    }; 
-                }
-                var reminderLogs = await _reminderLogsRepository.GetStartingFromDate(reminderId, DateTime.Now);
-                await _reminderLogsRepository.DeleteGroup(reminderLogs);
-                await _reminderRepository.DeleteReminder(reminderId);
-
-                transaction.Commit();
-                return new ResponseDTO() { isSuccess = true };
-            }
-            catch (Exception ex)
-            {
-                // Error inesperado
-                transaction.Rollback();
-                return new ResponseDTO() { isSuccess = false, message = ex.Message };
-            }
+            throw new NotImplementedException();
         }
 
         public async Task<List<Reminder>> GetAllReminders()
@@ -107,42 +81,20 @@ namespace API.PastillApp.Services.Services
             return reminder;
         }
 
-        public async Task<RemindersByUserIdDTO> GetRemindersByUserId(int userId)
+        public async Task<Reminder> GetReminderByUserId(int userId)
         {
-            var response = await _reminderRepository.GetReminderByUserId(userId);
-
             try
             {
-                var remindersByUserId = new RemindersByUserIdDTO()
-                {
-                    RemindersByUserId = new List<ReminderDTO>()
-                };
-
-                foreach (var reminder in response)
-                {
-                    var reminderDTO = new ReminderDTO()
-                    {
-                        ReminderId = reminder.ReminderId,
-                        Quantity = reminder.Quantity,
-                        Presentation = reminder.Presentation,
-                        DateTimeStart = reminder.DateTimeStart,
-                        FrequencyNumber = reminder.FrequencyNumber,
-                        FrequencyText = reminder.FrequencyText,
-                        EmergencyAlert = reminder.EmergencyAlert,
-                        Observation = reminder.Observation,
-                        IntakeTimeNumber = reminder.IntakeTimeNumber,
-                        IntakeTimeText = reminder.IntakeTimeText,
-                        EndDateTime = reminder.EndDateTime,
-                        MedicineName = reminder.Medicine.Name,
-                    };
-                    remindersByUserId.RemindersByUserId.Add(reminderDTO);
+                var response = await _reminderRepository.GetReminderByUserId(userId);
+                if (response == null){
+                    throw new NullReferenceException();
                 }
-                return remindersByUserId;
+                return response;
             }
             catch (Exception ex)
             {
-               throw new Exception(ex.Message, ex);
-            }
+                throw new Exception(ex.Message, ex);
+            };
         }
 
         public async Task<ResponseDTO> UpdateReminder(UpdateReminderDTO reminder)
@@ -429,6 +381,7 @@ namespace API.PastillApp.Services.Services
 
             return reminderLogDTOs;
         }
+
 
     }
 }

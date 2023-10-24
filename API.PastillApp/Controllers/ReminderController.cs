@@ -44,7 +44,7 @@ namespace API.PastillApp.Controllers
         {
             try
             {
-                var result = await _reminderService.GetRemindersByUserId(userId);
+                var result = await _reminderService.GetReminderByUserId(userId);
                 return Ok(result);
             }
             catch (Exception ex)

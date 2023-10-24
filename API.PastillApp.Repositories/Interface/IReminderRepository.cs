@@ -17,7 +17,7 @@ namespace API.PastillApp.Repositories.Interface
         Task<Reminder> GetReminderById(int reminderId);
 
         // READ 
-        Task<List<Reminder>> GetReminderByUserId(int userId);
+        Task<Reminder> GetReminderByUserId(int userId);
 
         // READ 
         Task<List<Reminder>> GetAllReminders();

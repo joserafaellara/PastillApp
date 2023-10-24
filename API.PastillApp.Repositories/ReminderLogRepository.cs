@@ -127,7 +127,6 @@ namespace API.PastillApp.Repositories
         {
             return await _context.ReminderLogs.Where(rl => rl.ReminderId == reminderId && rl.DateTime >= date).ToListAsync();
         }
-
         public async Task AddReminderLogs(List<ReminderLog> reminderLogs)
         {
             try
