@@ -63,15 +63,18 @@ namespace API.PastillApp.Repositories
         }
 
         // READ (Get a reminder by User ID.)
-        public async Task<Reminder> GetReminderByUserId(int userId)
+        public async Task<List<Reminder>> GetReminderByUserId(int userId)
         {
             try
             {
-                return await _context.Reminders.FirstOrDefaultAsync(r => r.UserId == userId);
+                return await _context.Reminders
+                   .Where(r => r.UserId == userId)
+                   .Include(r => r.Medicine)
+                   .ToListAsync();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al obtener el recordatorio por Id de Usuario: {ex.Message}");
+                Console.WriteLine($"Error al obtener los recordatorios por Id de Usuario: {ex.Message}");
                 throw;
             }
         }
@@ -108,7 +111,20 @@ namespace API.PastillApp.Repositories
         // DELETE (Delete a reminder by ID)
         public async Task DeleteReminder(int reminderId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var reminder = _context.Reminders.FirstOrDefault(r => r.ReminderId == reminderId);
+                if (reminder != null)
+                {
+                    _context.Reminders.Remove(reminder);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al eliminar un usuario: {ex.Message}");
+                throw;
+            }
         }
 
         public Task BeginTransaction()
