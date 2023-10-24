@@ -90,29 +90,43 @@ namespace API.PastillApp.Services.Services
             try
             {
                 var token = await _tokenService.GetTokenByUserEmail(request.UserMail);
-                
                 var emergencyRequest = await _userRepository.GetEmergencyRequestById(request.EmergencyRequestId);
-                var user = await _userRepository.GetUserByEmail(emergencyRequest.UserRequest.Email);
-                var emergencyUser = await _userRepository.GetUserById(emergencyRequest.UserAnswerId);
 
-                var token2 = await _tokenService.GetTokenByUserEmail(user.Email);
+                // Agrego verificar si emergencyRequest es nulo
+                if (emergencyRequest != null)
+                {
+                    var user = await _userRepository.GetUserByEmail(emergencyRequest.UserRequest.Email);
+                    var emergencyUser = await _userRepository.GetUserById(emergencyRequest.UserAnswerId);
 
-                if (request.Accept) {
-                    user.EmergencyUserId = emergencyUser.UserId;
-                    user.EmergencyUser = emergencyUser;
+                    var token2 = await _tokenService.GetTokenByUserEmail(user.Email);
 
-                    await _userRepository.UpdateUser(user);
-                    await _tokenService.SendMessage("Solicitud de contacto de emergencia", emergencyUser.Name +" ha aceptado tu solicitud!", token2.DeviceToken);
-                    await _userRepository.UpdateRequest(request.EmergencyRequestId, request.Accept);
-                } else{
-                    await _userRepository.DeleteEmergencyRequest(request.EmergencyRequestId);
-                    await _tokenService.SendMessage("Solicitud de contacto de emergencia", emergencyUser.Name + " ha rechazado tu solicitud.", token2.DeviceToken);
+                    if (request.Accept)
+                    {
+                        user.EmergencyUserId = emergencyUser.UserId;
+                        user.EmergencyUser = emergencyUser;
 
-                }      
-                response.isSuccess = true;
-                return response;
+                        await _userRepository.UpdateUser(user);
+                        await _tokenService.SendMessage("Solicitud de contacto de emergencia", emergencyUser.Name + " ha aceptado tu solicitud!", token2.DeviceToken);
+                        await _userRepository.UpdateRequest(request.EmergencyRequestId, request.Accept);
+                    }
+                    else
+                    {
+                        await _userRepository.DeleteEmergencyRequest(request.EmergencyRequestId);
+                        await _tokenService.SendMessage("Solicitud de contacto de emergencia", emergencyUser.Name + " ha rechazado tu solicitud.", token2.DeviceToken);
+
+                    }
+                    response.isSuccess = true;
+                    return response;
+                }
+                else
+                {
+                    // Manejar el caso en el que emergencyRequest es nulo
+                    response.isSuccess = false;
+                    response.message = "La solicitud de emergencia no se encontró";
+                    return response;
+                }
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 response.isSuccess = false;
                 response.message = ex.Message;
@@ -188,5 +202,51 @@ namespace API.PastillApp.Services.Services
                 };
             }
         }
+
+        public async Task<ResponseDTO> DeleteEmergencyContact(string userMail)
+        {
+            try
+            {
+                var user = await _userRepository.GetUserByEmail(userMail);
+
+                if (user == null)
+                {
+                    return new ResponseDTO
+                    {
+                        isSuccess = false,
+                        message = "No se encontró ningún usuario con este correo electrónico."
+                    };
+                }
+
+                if (user.EmergencyUserId == null)
+                {
+                    return new ResponseDTO
+                    {
+                        isSuccess = false,
+                        message = "El usuario no tiene un contacto de emergencia."
+                    };
+                }
+
+                user.EmergencyUserId = null;
+                user.EmergencyUser = null;
+
+                await _userRepository.UpdateUser(user);
+
+                return new ResponseDTO
+                {
+                    isSuccess = true,
+                    message = "Contacto de emergencia eliminado con éxito."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO
+                {
+                    isSuccess = false,
+                    message = "Error al eliminar el contacto de emergencia: " + ex.Message
+                };
+            }
+        }
+
     }
 }
