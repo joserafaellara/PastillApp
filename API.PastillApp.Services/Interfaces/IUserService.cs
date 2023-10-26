@@ -16,5 +16,6 @@ namespace API.PastillApp.Services.Interfaces
         Task<EmergencyRequestListDTO> EmergencyContactRecibedRequest(string userMail);
         Task<ResponseDTO> EmergencyContactResponse(EmergencyContactResponseDTO request);
         Task<ResponseDTO> DeleteEmergencyContact(string userMail);
+        Task<ResponseDTO> SendEmergencyMessage(string userMail);
     }
 }
