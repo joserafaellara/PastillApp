@@ -116,9 +116,17 @@ namespace API.PastillApp.Controllers
         [ProducesResponseType(typeof(ResponseDTO), 200)]
         public async Task<IActionResult> DeleteEmergencyContact(string userMail)
         {
-            var response = await _userService.DeleteEmergencyContact(userMail);
+            var result = await _userService.DeleteEmergencyContact(userMail);
 
-            return response.isSuccess ? Ok(response) : BadRequest(response);
+            return result.isSuccess ? Ok(result) : BadRequest(result);
+        }
+
+        [HttpPost("SendEmergencyMessage")]
+        [ProducesResponseType(typeof(ResponseDTO), 200)]
+        public async Task<IActionResult> SendEmergencyMessage(string userMail)
+        {
+            var result = await _userService.SendEmergencyMessage(userMail);
+            return result.isSuccess ? Ok(result) : BadRequest(result);
         }
     }
 }

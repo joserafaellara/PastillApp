@@ -134,6 +134,49 @@ namespace API.PastillApp.Services.Services
             }
         }
 
+        public async Task<ResponseDTO> SendEmergencyMessage(string userMail)
+        {
+            // Obtener el usuario con la sesión iniciada
+            var user = await GetUserByEmail(userMail);
+
+            if (user != null && user.EmergencyUser != null)
+            {
+                var emergencyContactEmail = user.EmergencyUser;
+                var emergencyContactToken = await _tokenService.GetTokenByUserEmail(emergencyContactEmail);
+
+                if (emergencyContactToken != null)
+                {
+                    string body = user.Name + " " + user.LastName + " necesita ayuda con urgencia!!";
+
+                    await _tokenService.SendMessage("EMERGENCIA", body, emergencyContactToken.DeviceToken!);
+
+                    return new ResponseDTO
+                    {
+                        isSuccess = true,
+                        message = "Mensaje de emergencia enviado con éxito.",
+                    };
+                }
+                else
+                {
+                    return new ResponseDTO
+                    {
+                        isSuccess = false,
+                        message = "No se pudo encontrar el token de notificación del contacto de emergencia.",
+                    };
+                }
+            }
+            else
+            {
+                return new ResponseDTO
+                {
+                    isSuccess = false,
+                    message = "Usuario no encontrado o no tiene un contacto de emergencia configurado.",
+                };
+            }
+        }
+
+
+
         public async Task<List<GetUserDTO>> GetAllUsers()
         {
             var users = await _userRepository.GetAllUsers();
