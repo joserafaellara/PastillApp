@@ -45,9 +45,9 @@ namespace API.PastillApp.Controllers
         }
 
         [HttpGet("{userEmail}")]
-        public async Task<IActionResult> GetTokenByUserEmail(string userEmail)
+        public async Task<IActionResult> GetTokensByUserEmail(string userEmail)
         {
-            var result = await _tokenService.GetTokenByUserEmail(userEmail);
+            var result = await _tokenService.GetTokensByUserEmail(userEmail);
 
             if (result != null)
             {

@@ -116,19 +116,22 @@ namespace API.PastillApp.Services.Services
         }
 
 
-        public async Task<Token> GetTokenByUserEmail(string userEmail)
+        public async Task<List<Token>> GetTokensByUserEmail(string userEmail)
         {
             try
             {
                 userEmail = userEmail.ToLower(); // Asegúrate de que el correo electrónico esté en minúsculas
 
-                var token = await _tokenRepository.GetTokenByUserEmail(userEmail);
+                var tokens = await _tokenRepository.GetTokensByUserEmail(userEmail);
 
-                return token;
+                // Mapear los tokens a TokenDTO si es necesario
+                var tokens2 = _mapper.Map<List<Token>>(tokens);
+
+                return tokens2;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al obtener el token por correo electrónico: {ex.Message}");
+                Console.WriteLine($"Error al obtener todos los tokens por correo electrónico: {ex.Message}");
                 // Puedes manejar el error según tus necesidades, por ejemplo, lanzar una excepción personalizada.
                 throw;
             }

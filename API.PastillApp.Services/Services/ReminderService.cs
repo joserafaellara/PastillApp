@@ -307,22 +307,48 @@ namespace API.PastillApp.Services.Services
 
         private async Task SendAlarm(string mail)
         {
-            var token = await _tokenService.GetTokenByUserEmail(mail);
+            try
+            {
+                var tokens = await _tokenService.GetTokensByUserEmail(mail);
 
-            if (token == null)
-                throw new Exception("No hay token para este user");
+                if (tokens.Count == 0)
+                {
+                    throw new Exception("No hay tokens para este usuario");
+                }
 
-            var result = await _tokenService.SendMessage("ALARM", "Hora de tomar tu medicamento", token.DeviceToken!);
+                foreach (var token in tokens)
+                {
+                    var result = await _tokenService.SendMessage("ALARM", "Hora de tomar tu medicamento", token.DeviceToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al enviar la alarma: {ex.Message}");
+                throw;
+            }
         }
 
         private async Task SendEmergencyAlarm(string mail, string userName)
         {
-            var token = await _tokenService.GetTokenByUserEmail(mail);
+            try
+            {
+                var tokens = await _tokenService.GetTokensByUserEmail(mail);
 
-            if (token == null)
-                throw new Exception("No hay token para este user");
+                if (tokens.Count == 0)
+                {
+                    throw new Exception("No hay tokens para este usuario");
+                }
 
-            var result = await _tokenService.SendMessage("EMERGENCY", (userName + " no se ha tomado su medicamento"), token.DeviceToken!);
+                foreach (var token in tokens)
+                {
+                    var result = await _tokenService.SendMessage("EMERGENCY", $"{userName} no se ha tomado su medicamento", token.DeviceToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al enviar la alarma de emergencia: {ex.Message}");
+                throw;
+            }
         }
 
         private async Task createReminderLogs(DateTime dateTimeStart, TimeSpan frecuency, DateTime dateExpired, int reminderId)

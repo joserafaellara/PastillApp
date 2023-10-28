@@ -72,15 +72,27 @@ namespace API.PastillApp.Services.Services
             var user = GetUserByEmail(request.UserMail).Result;
             var emergencyContact = GetUserByEmail(request.ContactEmergencyMail).Result;
 
-            var emergencyContactToken = _tokenService.GetTokenByUserEmail(request.ContactEmergencyMail).Result;
-            if (emergencyContactToken == null)
+            var emergencyContactTokens = await _tokenService.GetTokensByUserEmail(request.ContactEmergencyMail);
+
+            if (emergencyContactTokens.Count == 0)
+            {
                 throw new Exception("Contacto de emergencia no encontrado");
+            }
 
             string body = user.Name + " " + user.LastName + " ha solicitado que seas su contacto de emergencia";
 
-            await _userRepository.CreateRequest(new EmergencyContactRequest { UserRequestId = user.UserId, UserAnswerId = emergencyContact.UserId});
+            await _userRepository.CreateRequest(new EmergencyContactRequest { UserRequestId = user.UserId, UserAnswerId = emergencyContact.UserId });
 
-            return await _tokenService.SendMessage("Solicitud de contacto de Emergencia", body, emergencyContactToken.DeviceToken!);
+            foreach (var token in emergencyContactTokens)
+            {
+                await _tokenService.SendMessage("Solicitud de contacto de Emergencia", body, token.DeviceToken);
+            }
+
+            return new ResponseDTO
+            {
+                isSuccess = true,
+                message = "Solicitud de contacto de emergencia enviada con éxito",
+            };
         }
 
         public async Task<ResponseDTO> EmergencyContactResponse(EmergencyContactResponseDTO request)
@@ -89,16 +101,16 @@ namespace API.PastillApp.Services.Services
 
             try
             {
-                var token = await _tokenService.GetTokenByUserEmail(request.UserMail);
                 var emergencyRequest = await _userRepository.GetEmergencyRequestById(request.EmergencyRequestId);
 
-                // Agrego verificar si emergencyRequest es nulo
                 if (emergencyRequest != null)
                 {
                     var user = await _userRepository.GetUserByEmail(emergencyRequest.UserRequest.Email);
                     var emergencyUser = await _userRepository.GetUserById(emergencyRequest.UserAnswerId);
 
-                    var token2 = await _tokenService.GetTokenByUserEmail(user.Email);
+                    // Obtener todos los tokens asociados a los usuarios
+                    var userTokens = await _tokenService.GetTokensByUserEmail(user.Email);
+                    var emergencyUserTokens = await _tokenService.GetTokensByUserEmail(emergencyUser.Email);
 
                     if (request.Accept)
                     {
@@ -106,73 +118,107 @@ namespace API.PastillApp.Services.Services
                         user.EmergencyUser = emergencyUser;
 
                         await _userRepository.UpdateUser(user);
-                        await _tokenService.SendMessage("Solicitud de contacto de emergencia", emergencyUser.Name + " ha aceptado tu solicitud!", token2.DeviceToken);
+
+                        // Enviar mensajes a todos los tokens asociados a los usuarios
+                        foreach (var userToken in userTokens)
+                        {
+                            await _tokenService.SendMessage("Solicitud de contacto de emergencia", emergencyUser.Name + " ha aceptado tu solicitud!", userToken.DeviceToken);
+                        }
+
+                        foreach (var emergencyUserToken in emergencyUserTokens)
+                        {
+                            await _tokenService.SendMessage("Solicitud de contacto de emergencia", "Has aceptado la solicitud de contacto de emergencia de " + user.Name, emergencyUserToken.DeviceToken);
+                        }
+
                         await _userRepository.UpdateRequest(request.EmergencyRequestId, request.Accept);
                     }
                     else
                     {
                         await _userRepository.DeleteEmergencyRequest(request.EmergencyRequestId);
-                        await _tokenService.SendMessage("Solicitud de contacto de emergencia", emergencyUser.Name + " ha rechazado tu solicitud.", token2.DeviceToken);
 
+                        // Enviar mensajes a todos los tokens asociados a los usuarios
+                        foreach (var userToken in userTokens)
+                        {
+                            await _tokenService.SendMessage("Solicitud de contacto de emergencia", emergencyUser.Name + " ha rechazado tu solicitud.", userToken.DeviceToken);
+                        }
+
+                        foreach (var emergencyUserToken in emergencyUserTokens)
+                        {
+                            await _tokenService.SendMessage("Solicitud de contacto de emergencia", "Has rechazado la solicitud de contacto de emergencia de " + user.Name, emergencyUserToken.DeviceToken);
+                        }
                     }
+
                     response.isSuccess = true;
-                    return response;
                 }
                 else
                 {
-                    // Manejar el caso en el que emergencyRequest es nulo
                     response.isSuccess = false;
                     response.message = "La solicitud de emergencia no se encontró";
-                    return response;
                 }
             }
             catch (Exception ex)
             {
                 response.isSuccess = false;
                 response.message = ex.Message;
-                return response;
             }
+
+            return response;
         }
 
         public async Task<ResponseDTO> SendEmergencyMessage(string userMail)
         {
-            // Obtener el usuario con la sesión iniciada
-            var user = await GetUserByEmail(userMail);
+            var response = new ResponseDTO();
 
-            if (user != null && user.EmergencyUser != null)
+            try
             {
-                var emergencyContactEmail = user.EmergencyUser;
-                var emergencyContactToken = await _tokenService.GetTokenByUserEmail(emergencyContactEmail);
+                // Obtener el usuario con la sesión iniciada
+                var user = await GetUserByEmail(userMail);
 
-                if (emergencyContactToken != null)
+                if (user != null && user.EmergencyUser != null)
                 {
-                    string body = user.Name + " " + user.LastName + " necesita ayuda con urgencia!!";
+                    var emergencyContactEmail = user.EmergencyUser;
 
-                    await _tokenService.SendMessage("EMERGENCIA", body, emergencyContactToken.DeviceToken!);
+                    // Obtener todos los tokens asociados al usuario y al contacto de emergencia
+                    var userTokens = await _tokenService.GetTokensByUserEmail(userMail);
+                    var emergencyContactTokens = await _tokenService.GetTokensByUserEmail(emergencyContactEmail);
 
-                    return new ResponseDTO
+                    if (userTokens.Count == 0)
                     {
-                        isSuccess = true,
-                        message = "Mensaje de emergencia enviado con éxito.",
-                    };
+                        response.isSuccess = false;
+                        response.message = "No se encontraron tokens de notificación del usuario.";
+                    }
+                    else if (emergencyContactTokens.Count == 0)
+                    {
+                        response.isSuccess = false;
+                        response.message = "No se encontraron tokens de notificación del contacto de emergencia.";
+                    }
+                    else
+                    {
+                        string body = user.Name + " " + user.LastName + " necesita ayuda con urgencia!!";
+
+                        // Enviar el mensaje de emergencia a todos los tokens asociados al contacto de emergencia
+                        foreach (var emergencyContactToken in emergencyContactTokens)
+                        {
+                            await _tokenService.SendMessage("EMERGENCIA", body, emergencyContactToken.DeviceToken);
+                        }
+
+                        response.isSuccess = true;
+                        response.message = "Mensaje de emergencia enviado con éxito.";
+                    }
                 }
                 else
                 {
-                    return new ResponseDTO
-                    {
-                        isSuccess = false,
-                        message = "No se pudo encontrar el token de notificación del contacto de emergencia.",
-                    };
+                    response.isSuccess = false;
+                    response.message = "Usuario no encontrado o no tiene un contacto de emergencia configurado.";
                 }
             }
-            else
+            catch (Exception ex)
             {
-                return new ResponseDTO
-                {
-                    isSuccess = false,
-                    message = "Usuario no encontrado o no tiene un contacto de emergencia configurado.",
-                };
+                response.isSuccess = false;
+                response.message = ex.Message;
             }
+
+            return response;
         }
 
 

@@ -10,7 +10,7 @@ namespace API.PastillApp.Repositories.Interface
         Task<Token> GetTokenByValue(string tokenValue);
         Task UpdateToken(Token token);
         Task DeleteToken(Token token);
-        Task<Token> GetTokenByUserEmail(string userEmail);
+        Task<List<Token>> GetTokensByUserEmail(string userEmail);
         Task<IEnumerable<Token>> GetAllTokens();
     }
 }
