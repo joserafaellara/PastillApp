@@ -118,7 +118,17 @@ namespace API.PastillApp.Repositories
         // DELETE (Delete a reminder by ID)
         public async Task DeleteReminder(int reminderId)
         {
-            throw new NotImplementedException();
+            var reminder = await _context.Reminders.FindAsync(reminderId);
+
+            if (reminder != null)
+            {
+                _context.Reminders.Remove(reminder);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new Exception($"El recordatorio con ID {reminderId} no se encontró.");
+            }
         }
 
         public Task BeginTransaction()
