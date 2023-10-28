@@ -76,6 +76,10 @@ namespace API.PastillApp.Services.Mapper
                 .ForMember(dest => dest.Presentation, opt => opt.MapFrom(src => src.Reminder.Presentation))
                 .ForMember(dest => dest.Observation, opt => opt.MapFrom(src => src.Reminder.Observation));
 
+            CreateMap<Reminder, ReminderDTO>()
+                .ForMember(dest => dest.MedicineName, opt => opt.MapFrom(src => src.Medicine.Name));
+
+
         }
     }
 }

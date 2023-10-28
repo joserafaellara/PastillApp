@@ -6,7 +6,7 @@ namespace API.PastillApp.Services.Interfaces
 {
     public interface IReminderService
     {
-        Task<Reminder> GetReminder(int reminderId);
+        Task<ReminderDTO> GetReminder(int reminderId);
         Task<RemindersByUserIdDTO> GetRemindersByUserId(int userId);
         Task<List<Reminder>> GetAllReminders();
         Task<ResponseDTO> CreateReminder(CreateReminderDTO reminder);
@@ -16,5 +16,6 @@ namespace API.PastillApp.Services.Interfaces
         Task SendAlarmNotification(ReminderLog reminderlog);
         Task SendEmergencyNotification(ReminderLog reminderlog);
         Task<List<ReminderLogDTO>> GetReminderLogsFromTodayByUserId(int userId);
+        Task<List<ReminderDTO>> GetActiveRemindersByUserId(int userId);
     }
 }

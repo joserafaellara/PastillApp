@@ -40,7 +40,10 @@ namespace API.PastillApp.Repositories
         {
             try
             {
-                return await _context.Reminders.FirstOrDefaultAsync(r => r.ReminderId == reminderId);
+                return await _context.Reminders
+                    .Where(r => r.ReminderId == reminderId)
+                    .Include(r => r.Medicine)
+                    .FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
@@ -121,6 +124,14 @@ namespace API.PastillApp.Repositories
         public Task BeginTransaction()
         {
             throw new NotImplementedException();
+        }
+
+
+        public async Task<List<Reminder>> GetActiveRemindersByUserId(int userId, DateTime today)
+        {
+            return await _context.Reminders
+                .Where(r => r.UserId == userId && r.EndDateTime >= today)
+                .ToListAsync();
         }
     }
 }

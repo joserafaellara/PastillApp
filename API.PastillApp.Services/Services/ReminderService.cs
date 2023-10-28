@@ -98,10 +98,11 @@ namespace API.PastillApp.Services.Services
             return reminder;
         }
 
-        public async Task<Reminder> GetReminder(int reminderId)
+        public async Task<ReminderDTO> GetReminder(int reminderId)
         {
             var reminder = await _reminderRepository.GetReminderById(reminderId);
-            return reminder;
+            var reminderDTO = _mapper.Map<ReminderDTO>(reminder);
+            return reminderDTO;
         }
 
         public async Task<RemindersByUserIdDTO> GetRemindersByUserId(int userId)
@@ -117,21 +118,7 @@ namespace API.PastillApp.Services.Services
 
                 foreach (var reminder in response)
                 {
-                    var reminderDTO = new ReminderDTO()
-                    {
-                        ReminderId = reminder.ReminderId,
-                        Quantity = reminder.Quantity,
-                        Presentation = reminder.Presentation,
-                        DateTimeStart = reminder.DateTimeStart,
-                        FrequencyNumber = reminder.FrequencyNumber,
-                        FrequencyText = reminder.FrequencyText,
-                        EmergencyAlert = reminder.EmergencyAlert,
-                        Observation = reminder.Observation,
-                        IntakeTimeNumber = reminder.IntakeTimeNumber,
-                        IntakeTimeText = reminder.IntakeTimeText,
-                        EndDateTime = reminder.EndDateTime,
-                        MedicineName = reminder.Medicine.Name,
-                    };
+                    var reminderDTO = _mapper.Map<ReminderDTO>(reminder);
                     remindersByUserId.RemindersByUserId.Add(reminderDTO);
                 }
                 return remindersByUserId;
@@ -425,6 +412,20 @@ namespace API.PastillApp.Services.Services
             var reminderLogDTOs = _mapper.Map<List<ReminderLogDTO>>(reminderLogs);
 
             return reminderLogDTOs;
+        }
+
+        public async Task<List<ReminderDTO>> GetActiveRemindersByUserId(int userId)
+        {
+            // Obtener la fecha actual
+            DateTime today = DateTime.Now.Date;
+
+            // Obtener los recordatorios activos cuya fecha de finalización es menor o igual a hoy
+            List<Reminder> activeReminders = await _reminderRepository.GetActiveRemindersByUserId(userId, today);
+
+            // Mapear los recordatorios activos a ReminderDTO
+            List<ReminderDTO> activeReminderDTOs = _mapper.Map<List<ReminderDTO>>(activeReminders);
+
+            return activeReminderDTOs;
         }
 
 

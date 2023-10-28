@@ -111,5 +111,25 @@ namespace API.PastillApp.Controllers
             var reminderLogDTOs = await _reminderService.GetReminderLogsFromTodayByUserId(userId);
             return Ok(reminderLogDTOs);
         }
+
+        [HttpGet("active/{userId}")]
+        public async Task<IActionResult> GetActiveRemindersByUserId(int userId)
+        {
+            try
+            {
+                var activeReminders = await _reminderService.GetActiveRemindersByUserId(userId);
+
+                if (activeReminders.Count == 0)
+                {
+                    return NoContent();
+                }
+
+                return Ok(activeReminders);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
     }
 }
