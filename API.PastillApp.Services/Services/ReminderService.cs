@@ -98,10 +98,11 @@ namespace API.PastillApp.Services.Services
             return reminder;
         }
 
-        public async Task<Reminder> GetReminder(int reminderId)
+        public async Task<ReminderDTO> GetReminder(int reminderId)
         {
             var reminder = await _reminderRepository.GetReminderById(reminderId);
-            return reminder;
+            var reminderDTO = _mapper.Map<ReminderDTO>(reminder);
+            return reminderDTO;
         }
 
         public async Task<RemindersByUserIdDTO> GetRemindersByUserId(int userId)
@@ -117,21 +118,7 @@ namespace API.PastillApp.Services.Services
 
                 foreach (var reminder in response)
                 {
-                    var reminderDTO = new ReminderDTO()
-                    {
-                        ReminderId = reminder.ReminderId,
-                        Quantity = reminder.Quantity,
-                        Presentation = reminder.Presentation,
-                        DateTimeStart = reminder.DateTimeStart,
-                        FrequencyNumber = reminder.FrequencyNumber,
-                        FrequencyText = reminder.FrequencyText,
-                        EmergencyAlert = reminder.EmergencyAlert,
-                        Observation = reminder.Observation,
-                        IntakeTimeNumber = reminder.IntakeTimeNumber,
-                        IntakeTimeText = reminder.IntakeTimeText,
-                        EndDateTime = reminder.EndDateTime,
-                        MedicineName = reminder.Medicine.Name,
-                    };
+                    var reminderDTO = _mapper.Map<ReminderDTO>(reminder);
                     remindersByUserId.RemindersByUserId.Add(reminderDTO);
                 }
                 return remindersByUserId;
@@ -320,22 +307,48 @@ namespace API.PastillApp.Services.Services
 
         private async Task SendAlarm(string mail)
         {
-            var token = await _tokenService.GetTokenByUserEmail(mail);
+            try
+            {
+                var tokens = await _tokenService.GetTokensByUserEmail(mail);
 
-            if (token == null)
-                throw new Exception("No hay token para este user");
+                if (tokens.Count == 0)
+                {
+                    throw new Exception("No hay tokens para este usuario");
+                }
 
-            var result = await _tokenService.SendMessage("ALARM", "Hora de tomar tu medicamento", token.DeviceToken!);
+                foreach (var token in tokens)
+                {
+                    var result = await _tokenService.SendMessage("ALARM", "Hora de tomar tu medicamento", token.DeviceToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al enviar la alarma: {ex.Message}");
+                throw;
+            }
         }
 
         private async Task SendEmergencyAlarm(string mail, string userName)
         {
-            var token = await _tokenService.GetTokenByUserEmail(mail);
+            try
+            {
+                var tokens = await _tokenService.GetTokensByUserEmail(mail);
 
-            if (token == null)
-                throw new Exception("No hay token para este user");
+                if (tokens.Count == 0)
+                {
+                    throw new Exception("No hay tokens para este usuario");
+                }
 
-            var result = await _tokenService.SendMessage("EMERGENCY", (userName + " no se ha tomado su medicamento"), token.DeviceToken!);
+                foreach (var token in tokens)
+                {
+                    var result = await _tokenService.SendMessage("EMERGENCY", $"{userName} no se ha tomado su medicamento", token.DeviceToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al enviar la alarma de emergencia: {ex.Message}");
+                throw;
+            }
         }
 
         private async Task createReminderLogs(DateTime dateTimeStart, TimeSpan frecuency, DateTime dateExpired, int reminderId)
@@ -425,6 +438,20 @@ namespace API.PastillApp.Services.Services
             var reminderLogDTOs = _mapper.Map<List<ReminderLogDTO>>(reminderLogs);
 
             return reminderLogDTOs;
+        }
+
+        public async Task<List<ReminderDTO>> GetActiveRemindersByUserId(int userId)
+        {
+            // Obtener la fecha actual
+            DateTime today = DateTime.Now.Date;
+
+            // Obtener los recordatorios activos cuya fecha de finalización es menor o igual a hoy
+            List<Reminder> activeReminders = await _reminderRepository.GetActiveRemindersByUserId(userId, today);
+
+            // Mapear los recordatorios activos a ReminderDTO
+            List<ReminderDTO> activeReminderDTOs = _mapper.Map<List<ReminderDTO>>(activeReminders);
+
+            return activeReminderDTOs;
         }
 
 

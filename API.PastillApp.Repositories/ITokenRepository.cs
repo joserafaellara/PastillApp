@@ -46,16 +46,18 @@ namespace API.PastillApp.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Token> GetTokenByUserEmail(string userEmail)
+        public async Task<List<Token>> GetTokensByUserEmail(string userEmail)
         {
-            userEmail = userEmail.ToLower(); // Asegúrate de que el correo electrónico esté en minúsculas
-
-            var token = await _context.Tokens.FirstOrDefaultAsync(t => t.UserEmail == userEmail);
-            return token;
+            return await _context.Tokens
+                .Where(t => t.UserEmail == userEmail.ToLower())
+                .ToListAsync();
         }
+
         public async Task<IEnumerable<Token>> GetAllTokens()
         {
             return await _context.Tokens.ToListAsync();
         }
+
+
     }
 }
