@@ -12,6 +12,7 @@ namespace API.PastillApp.Repositories
     public class ReminderLogRepository : IReminderLogsRepository
     {
         private readonly PastillAppContext _context;
+       
 
         public ReminderLogRepository(PastillAppContext context)
         {
@@ -127,6 +128,14 @@ namespace API.PastillApp.Repositories
         {
             return await _context.ReminderLogs.Where(rl => rl.ReminderId == reminderId && rl.DateTime >= date).ToListAsync();
         }
+
+        public async Task<List<ReminderLog>> GetByTimeLapse(int reminderId, DateTime dateStart, DateTime dateFinish)      
+        {
+            
+            return await _context.ReminderLogs.Where(rl => rl.ReminderId == reminderId && rl.DateTime >= dateStart && rl.DateTime <= dateFinish).ToListAsync();
+           
+        }
+
         public async Task AddReminderLogs(List<ReminderLog> reminderLogs)
         {
             try
