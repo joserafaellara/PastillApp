@@ -100,26 +100,33 @@ namespace API.PastillApp.Services.Services
             var reminder = await _reminderRepository.GetAllReminders();
             return reminder;
         }
-      
-        public async Task<List<ReminderLog>> GetLogsByTimeLapse(RemindersByUserIdDTO reminders, DateTime start, DateTime finish)
+
+        public async Task<List<ReminderLogDTO>> GetLogsByTimeLapse(RemindersByUserIdDTO reminders, DateTime start, DateTime finish)
         {
-            List<ReminderLog> allLogs = new List<ReminderLog>();
+            List<ReminderLogDTO> allLogs = new List<ReminderLogDTO>();
 
             foreach (ReminderDTO reminder in reminders.RemindersByUserId)
             {
                 List<ReminderLog> logs = await GetLogsByEachReminder(reminder.ReminderId, start, finish);
-                allLogs.AddRange(logs);
+
+                // Mapear los objetos ReminderLog a ReminderLogDTO y agregarlos a la lista
+                List<ReminderLogDTO> logDTOs = logs.Select(log => _mapper.Map<ReminderLogDTO>(log)).ToList();
+                allLogs.AddRange(logDTOs);
             }
+
+            // Ordenar por DateTime
+            allLogs = allLogs.OrderBy(log => log.DateTime).ToList();
 
             return allLogs;
         }
-        public async Task<List<ReminderLog>> GetLogsByEachReminder(int reminderId,DateTime start, DateTime finish)
+
+        public async Task<List<ReminderLog>> GetLogsByEachReminder(int reminderId, DateTime start, DateTime finish)
         {
             var logs = await _reminderLogsRepository.GetByTimeLapse(reminderId, start, finish);
             return logs;
         }
 
-    public async Task<ReminderDTO> GetReminder(int reminderId)
+        public async Task<ReminderDTO> GetReminder(int reminderId)
         {
             var reminder = await _reminderRepository.GetReminderById(reminderId);
             var reminderDTO = _mapper.Map<ReminderDTO>(reminder);
@@ -474,6 +481,55 @@ namespace API.PastillApp.Services.Services
 
             return activeReminderDTOs;
         }
+
+        public async Task<ResponseDTO> ReminderLogTaken(int reminderLogId)
+        {
+            try
+            {
+                var reminderLog = await _reminderLogsRepository.GetReminderLogById(reminderLogId);
+
+                if (reminderLog != null)
+                {
+                    if (!reminderLog.Taken)
+                    {
+                        reminderLog.Taken = true;
+
+                        await _reminderLogsRepository.UpdateReminderLog(reminderLog);
+
+                        return new ResponseDTO
+                        {
+                            isSuccess = true,
+                            message = "El log se ha marcado como tomado con éxito."
+                        };
+                    }
+                    else
+                    {
+                        return new ResponseDTO
+                        {
+                            isSuccess = false,
+                            message = "El log ya ha sido marcado como tomado anteriormente."
+                        };
+                    }
+                }
+                else
+                {
+                    return new ResponseDTO
+                    {
+                        isSuccess = false,
+                        message = "Registro de ReminderLog no encontrado."
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO
+                {
+                    isSuccess = false,
+                    message = $"Error al marcar el log como tomado: {ex.Message}"
+                };
+            }
+        }
+
 
 
     }

@@ -9,7 +9,7 @@ namespace API.PastillApp.Services.Interfaces
         Task<ReminderDTO> GetReminder(int reminderId);
         Task<RemindersByUserIdDTO> GetRemindersByUserId(int userId);
         Task<List<Reminder>> GetAllReminders();
-        Task<List<ReminderLog>> GetLogsByTimeLapse(RemindersByUserIdDTO reminders, DateTime start, DateTime finish);
+        Task<List<ReminderLogDTO>> GetLogsByTimeLapse(RemindersByUserIdDTO reminders, DateTime start, DateTime finish);
         Task<List<ReminderLog>> GetLogsByEachReminder(int reminderId, DateTime start, DateTime finish);
         Task<ResponseDTO> CreateReminder(CreateReminderDTO reminder);
         Task<ResponseDTO> UpdateReminder(UpdateReminderDTO reminder);
@@ -19,5 +19,6 @@ namespace API.PastillApp.Services.Interfaces
         Task SendEmergencyNotification(ReminderLog reminderlog);
         Task<List<ReminderLogDTO>> GetReminderLogsFromTodayByUserId(int userId);
         Task<List<ReminderDTO>> GetActiveRemindersByUserId(int userId);
+        Task<ResponseDTO> ReminderLogTaken(int userId);
     }
 }

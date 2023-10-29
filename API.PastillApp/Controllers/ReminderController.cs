@@ -93,17 +93,18 @@ namespace API.PastillApp.Controllers
             }
         }
 
+        //ES ESTE
         [HttpGet("reminderlogs/{userId}/{dateStart}/{dateFinish}")]
-        public async Task<List<ReminderLog>> GetLogsTimeLapseByUser(int userId, DateTime dateStart, DateTime dateFinish)
+        public async Task<List<ReminderLogDTO>> GetLogsTimeLapseByUser(int userId, DateTime dateStart, DateTime dateFinish)
         {
             RemindersByUserIdDTO reminders = await _reminderService.GetRemindersByUserId(userId);
-            List<ReminderLog> reminderLogs = new List<ReminderLog>();
+            List<ReminderLogDTO> reminderLogs = new List<ReminderLogDTO>();
 
             
             
                reminderLogs = await _reminderService.GetLogsByTimeLapse(reminders, dateStart, dateFinish);
 
-            return reminderLogs.OrderBy(log => log.DateTime).ToList();
+            return reminderLogs;
         }
 
 
@@ -149,5 +150,32 @@ namespace API.PastillApp.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+
+        [HttpPut("reminderlogs/{reminderLogId}/taken")]
+        public async Task<IActionResult> MarkReminderLogAsTaken(int reminderLogId)
+        {
+            try
+            {
+                var response = await _reminderService.ReminderLogTaken(reminderLogId);
+
+                if (response.isSuccess)
+                {
+                    return Ok(response);
+                }
+                else
+                {
+                    return BadRequest(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseDTO
+                {
+                    isSuccess = false,
+                    message = $"Error al marcar el log como tomado: {ex.Message}"
+                });
+            }
+        }
+
     }
 }
