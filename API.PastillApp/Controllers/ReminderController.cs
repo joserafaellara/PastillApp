@@ -60,6 +60,8 @@ namespace API.PastillApp.Controllers
             return result.isSuccess ? Ok(result) : BadRequest(result);
         }
 
+       
+
         [HttpPut("{reminderId}")]
         public async Task<IActionResult> UpdateReminder(int reminderId, UpdateReminderDTO updateReminderDTO) 
         {
@@ -90,6 +92,22 @@ namespace API.PastillApp.Controllers
                 return BadRequest($"Error al eliminar el recordatorio: {ex.Message}");
             }
         }
+
+        [HttpGet("reminderlogs/{userId}/{dateStart}/{dateFinish}")]
+        public async Task<List<ReminderLog>> GetLogsTimeLapseByUser(int userId, DateTime dateStart, DateTime dateFinish)
+        {
+            RemindersByUserIdDTO reminders = await _reminderService.GetRemindersByUserId(userId);
+            List<ReminderLog> reminderLogs = new List<ReminderLog>();
+
+            
+            
+               reminderLogs = await _reminderService.GetLogsByTimeLapse(reminders, dateStart, dateFinish);
+
+            return reminderLogs.OrderBy(log => log.DateTime).ToList();
+        }
+
+
+
 
         [HttpGet("{reminderId}/reminderlogs")]
         public async Task<IActionResult> GetReminderLogsByReminderId(int reminderId)

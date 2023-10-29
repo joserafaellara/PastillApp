@@ -6,7 +6,10 @@ using API.PastillApp.Repositories.Migrations;
 using API.PastillApp.Services.DTOs;
 using API.PastillApp.Services.Interfaces;
 using AutoMapper;
+using Azure;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata;
+using System;
 using System.Runtime.Serialization.Formatters;
 using System.Transactions;
 
@@ -97,8 +100,26 @@ namespace API.PastillApp.Services.Services
             var reminder = await _reminderRepository.GetAllReminders();
             return reminder;
         }
+      
+        public async Task<List<ReminderLog>> GetLogsByTimeLapse(RemindersByUserIdDTO reminders, DateTime start, DateTime finish)
+        {
+            List<ReminderLog> allLogs = new List<ReminderLog>();
 
-        public async Task<ReminderDTO> GetReminder(int reminderId)
+            foreach (ReminderDTO reminder in reminders.RemindersByUserId)
+            {
+                List<ReminderLog> logs = await GetLogsByEachReminder(reminder.ReminderId, start, finish);
+                allLogs.AddRange(logs);
+            }
+
+            return allLogs;
+        }
+        public async Task<List<ReminderLog>> GetLogsByEachReminder(int reminderId,DateTime start, DateTime finish)
+        {
+            var logs = await _reminderLogsRepository.GetByTimeLapse(reminderId, start, finish);
+            return logs;
+        }
+
+    public async Task<ReminderDTO> GetReminder(int reminderId)
         {
             var reminder = await _reminderRepository.GetReminderById(reminderId);
             var reminderDTO = _mapper.Map<ReminderDTO>(reminder);
