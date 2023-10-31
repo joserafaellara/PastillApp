@@ -239,6 +239,8 @@ namespace API.PastillApp.Repositories
         {
             return await _context.ReminderLogs
                 .Where(rl => rl.Reminder.UserId == userId && rl.DateTime.Date == date)
+                .Include(rl => rl.Reminder)
+                .Include(rl => rl.Reminder.Medicine)
                 .ToListAsync();
         }
 
