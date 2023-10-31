@@ -177,5 +177,19 @@ namespace API.PastillApp.Controllers
             }
         }
 
+        [HttpGet("reminders/logs/{userId}/{dateString}")]
+        public async Task<IActionResult> GetReminderLogsByDate(int userId, string dateString)
+        {
+            try
+            {
+                var result = await _reminderService.GetReminderLogsByDate(userId, dateString);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error al obtener los registros de recordatorios por fecha: {ex.Message}");
+            }
+        }
+
     }
 }

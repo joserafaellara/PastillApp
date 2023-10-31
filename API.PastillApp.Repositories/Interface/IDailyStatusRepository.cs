@@ -20,5 +20,6 @@ namespace API.PastillApp.Repositories.Interface
         Task UpdateDailyStatus(DailyStatus dailyStatus);
 
         Task DeleteDailyStatus(int dailyStatusId);
+        Task<DailyStatus> GetDailyStatusByDateAndID(int userId, DateTime date);
     }
 }

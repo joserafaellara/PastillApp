@@ -15,6 +15,7 @@ namespace API.PastillApp.Repositories.Interface
         Task DeleteReminderLog(int reminderLogId);
         Task<List<ReminderLog>> GetStartingFromDate(int reminderId, DateTime date);
         Task DeleteGroup(List<ReminderLog> reminderLogs);
+        Task<List<ReminderLog>> GetReminderLogsByDate(int userId, DateTime date);
 
     }
 }

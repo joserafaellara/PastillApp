@@ -235,6 +235,12 @@ namespace API.PastillApp.Repositories
                 throw;
             }
         }
+        public async Task<List<ReminderLog>> GetReminderLogsByDate(int userId, DateTime date)
+        {
+            return await _context.ReminderLogs
+                .Where(rl => rl.Reminder.UserId == userId && rl.DateTime.Date == date)
+                .ToListAsync();
+        }
 
     }
 

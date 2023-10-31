@@ -20,5 +20,6 @@ namespace API.PastillApp.Services.Interfaces
         Task<List<ReminderLogDTO>> GetReminderLogsFromTodayByUserId(int userId);
         Task<List<ReminderDTO>> GetActiveRemindersByUserId(int userId);
         Task<ResponseDTO> ReminderLogTaken(int userId);
+        Task<List<ReminderLogDTO>> GetReminderLogsByDate(int userId, string dateString);
     }
 }
