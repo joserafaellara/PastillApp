@@ -9,8 +9,6 @@ namespace API.PastillApp.Services.Interfaces
         Task<ReminderDTO> GetReminder(int reminderId);
         Task<RemindersByUserIdDTO> GetRemindersByUserId(int userId);
         Task<List<Reminder>> GetAllReminders();
-        Task<List<ReminderLogDTO>> GetLogsByTimeLapse(RemindersByUserIdDTO reminders, DateTime start, DateTime finish);
-        Task<List<ReminderLog>> GetLogsByEachReminder(int reminderId, DateTime start, DateTime finish);
         Task<ResponseDTO> CreateReminder(CreateReminderDTO reminder);
         Task<ResponseDTO> UpdateReminder(UpdateReminderDTO reminder);
         Task<ResponseDTO> DeleteReminder(int reminderId);

@@ -101,30 +101,6 @@ namespace API.PastillApp.Services.Services
             return reminder;
         }
 
-        public async Task<List<ReminderLogDTO>> GetLogsByTimeLapse(RemindersByUserIdDTO reminders, DateTime start, DateTime finish)
-        {
-            List<ReminderLogDTO> allLogs = new List<ReminderLogDTO>();
-
-            foreach (ReminderDTO reminder in reminders.RemindersByUserId)
-            {
-                List<ReminderLog> logs = await GetLogsByEachReminder(reminder.ReminderId, start, finish);
-
-                // Mapear los objetos ReminderLog a ReminderLogDTO y agregarlos a la lista
-                List<ReminderLogDTO> logDTOs = logs.Select(log => _mapper.Map<ReminderLogDTO>(log)).ToList();
-                allLogs.AddRange(logDTOs);
-            }
-
-            // Ordenar por DateTime
-            allLogs = allLogs.OrderBy(log => log.DateTime).ToList();
-
-            return allLogs;
-        }
-
-        public async Task<List<ReminderLog>> GetLogsByEachReminder(int reminderId, DateTime start, DateTime finish)
-        {
-            var logs = await _reminderLogsRepository.GetByTimeLapse(reminderId, start, finish);
-            return logs;
-        }
 
         public async Task<ReminderDTO> GetReminder(int reminderId)
         {
