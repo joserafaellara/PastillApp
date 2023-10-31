@@ -28,9 +28,9 @@ namespace API.PastillApp
                     var reminderLogsRepository = serviceProvider.GetRequiredService<IReminderLogsRepository>();
                     var reminderService = serviceProvider.GetRequiredService<IReminderService>();
 
-                   // await ProcessSendNotification(reminderLogsRepository, reminderService);
-                   // await ProcessPostergerNotification(reminderLogsRepository, reminderService);
-                   // await ProcessNotificationEmergency(reminderLogsRepository, reminderService);
+                    await ProcessSendNotification(reminderLogsRepository, reminderService);
+                    await ProcessPostergerNotification(reminderLogsRepository, reminderService);
+                    await ProcessNotificationEmergency(reminderLogsRepository, reminderService);
                 }
 
                 await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);

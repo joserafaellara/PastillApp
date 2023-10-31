@@ -331,6 +331,8 @@ namespace API.PastillApp.Services.Services
             else    
                 await SendEmergencyAlarm(user.EmergencyUser.Email, (user.Name + " " + user.LastName));
 
+            reminderlog.EmergencyNotification = true;
+            await _reminderLogsRepository.UpdateReminderLog(reminderlog);
         }
 
         private async Task SendAlarm(string mail)
@@ -392,7 +394,8 @@ namespace API.PastillApp.Services.Services
                     DateTime = currentDateTime,
                     Taken = false,
                     Notificated = false,
-                    SecondNotification = false
+                    SecondNotification = false,
+                    EmergencyNotification = false
                     
                 });
 
