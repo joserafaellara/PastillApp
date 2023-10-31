@@ -70,11 +70,15 @@ namespace API.PastillApp.Services.Mapper
                 .ForMember(dest => dest.EmergencyUser, opt => opt.MapFrom(src => src.EmergencyUser.Email));
 
             CreateMap<ReminderLog, ReminderLogDTO>()
-                .ForMember(dest => dest.MedicineId, opt => opt.MapFrom(src => src.Reminder.MedicineId))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Reminder.Medicine.Name))
-                .ForMember(dest => dest.Dosage, opt => opt.MapFrom(src => src.Reminder.Medicine.Dosage))
-                .ForMember(dest => dest.Presentation, opt => opt.MapFrom(src => src.Reminder.Presentation))
-                .ForMember(dest => dest.Observation, opt => opt.MapFrom(src => src.Reminder.Observation));
+                    .ForMember(dest => dest.ReminderLogId, opt => opt.MapFrom(src => src.ReminderLogId))
+                    .ForMember(dest => dest.ReminderId, opt => opt.MapFrom(src => src.ReminderId))
+                    .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => src.DateTime))
+                    .ForMember(dest => dest.Taken, opt => opt.MapFrom(src => src.Taken))
+                    .ForMember(dest => dest.MedicineId, opt => opt.MapFrom(src => src.Reminder.MedicineId))
+                    .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Reminder.Medicine.Name))
+                    .ForMember(dest => dest.Dosage, opt => opt.MapFrom(src => src.Reminder.Medicine.Dosage))
+                    .ForMember(dest => dest.Presentation, opt => opt.MapFrom(src => src.Reminder.Presentation))
+                    .ForMember(dest => dest.Observation, opt => opt.MapFrom(src => src.Reminder.Observation));
 
             CreateMap<Reminder, ReminderDTO>()
                 .ForMember(dest => dest.MedicineName, opt => opt.MapFrom(src => src.Medicine.Name));
