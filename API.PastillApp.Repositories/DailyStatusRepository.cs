@@ -122,5 +122,21 @@ namespace API.PastillApp.Repositories
                 throw;
             }
         }
+
+        public async Task<DailyStatus> GetDailyStatusByDateAndID(int userId, DateTime date)
+        {
+            try
+            {
+                return await _context.DailyStatuses
+                    .Where(ds => ds.UserId == userId && ds.Date == date)
+                    .FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al obtener el estado diario por fecha y ID: {ex.Message}");
+                throw;
+            }
+        }
+
     }
 }

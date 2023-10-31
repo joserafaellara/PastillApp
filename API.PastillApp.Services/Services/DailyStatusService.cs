@@ -146,5 +146,31 @@ namespace API.PastillApp.Services.Services
                 };
             }
         }
+
+        public async Task<DailyStatusDTO> GetDailyStatusByDateAndID(int userId, string dateString)
+        {
+            try
+            {
+                if (!DateTime.TryParse(dateString, out DateTime date))
+                {
+                    throw new ArgumentException("Formato de fecha incorrecto.");
+                }
+
+                var dailyStatus = await _dailyStatusRepository.GetDailyStatusByDateAndID(userId, date);
+
+                if (dailyStatus != null)
+                {
+                    var dailyStatusDTO = _mapper.Map<DailyStatusDTO>(dailyStatus);
+                    return dailyStatusDTO;
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al obtener el estado diario por fecha y ID: {ex.Message}");
+                throw;
+            }
+        }
     }
 }

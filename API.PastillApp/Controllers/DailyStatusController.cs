@@ -104,5 +104,19 @@ namespace API.PastillApp.Controllers
                 return BadRequest($"Error al eliminar el estado diario: {ex.Message}");
             }
         }
+
+        [HttpGet("dailystatus/{userId}/{dateString}")]
+        public async Task<IActionResult> GetDailyStatusByDateAndID(int userId, string dateString)
+        {
+            try
+            {
+                var result = await _dailyStatusService.GetDailyStatusByDateAndID(userId, dateString);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error al obtener el estado diario por fecha y ID: {ex.Message}");
+            }
+        }
     }
 }

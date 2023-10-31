@@ -530,7 +530,28 @@ namespace API.PastillApp.Services.Services
             }
         }
 
-
+        public async Task<List<ReminderLogDTO>> GetReminderLogsByDate(int userId, string dateString)
+        {
+            try
+            {
+                if (DateTime.TryParse(dateString, out DateTime date))
+                {
+                    var reminderLogs = await _reminderLogsRepository.GetReminderLogsByDate(userId, date);
+                    var reminderLogDTOs = _mapper.Map<List<ReminderLogDTO>>(reminderLogs);
+                    return reminderLogDTOs;
+                }
+                else
+                {
+                    return new List<ReminderLogDTO>();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Manejo de excepciones: puedes registrar el error, lanzar una excepción personalizada o realizar otras acciones necesarias.
+                Console.WriteLine($"Error al obtener los registros de recordatorios por fecha: {ex.Message}");
+                throw;
+            }
+        }
 
     }
 }
