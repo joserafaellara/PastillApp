@@ -93,21 +93,6 @@ namespace API.PastillApp.Controllers
             }
         }
 
-        //ES ESTE
-        [HttpGet("reminderlogs/{userId}/{dateStart}/{dateFinish}")]
-        public async Task<List<ReminderLogDTO>> GetLogsTimeLapseByUser(int userId, DateTime dateStart, DateTime dateFinish)
-        {
-            RemindersByUserIdDTO reminders = await _reminderService.GetRemindersByUserId(userId);
-            List<ReminderLogDTO> reminderLogs = new List<ReminderLogDTO>();
-
-            
-            
-               reminderLogs = await _reminderService.GetLogsByTimeLapse(reminders, dateStart, dateFinish);
-
-            return reminderLogs;
-        }
-
-
 
 
         [HttpGet("{reminderId}/reminderlogs")]

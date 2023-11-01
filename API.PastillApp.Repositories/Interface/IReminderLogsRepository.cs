@@ -5,7 +5,6 @@ namespace API.PastillApp.Repositories.Interface
     {
         Task AddReminderLogs(List<ReminderLog> reminderLogs);
         Task<ReminderLog> GetReminderLogById(int id);
-        Task<List<ReminderLog>> GetByTimeLapse(int reminderId, DateTime dateStart, DateTime dateFinish);
         Task<List<ReminderLog>> GetbyReminderId(int reminderId);
         Task<List<ReminderLog>> GetReminderLogsNoTaken();
         Task<List<ReminderLog>> GetReminderLogsNoTakenNotificated();
