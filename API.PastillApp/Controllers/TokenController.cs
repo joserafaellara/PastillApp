@@ -32,7 +32,7 @@ namespace API.PastillApp.Controllers
 
         // DELETE: api/Token
         [HttpDelete]
-        public async Task<IActionResult> DeleteToken(string tokenValue)
+        public async Task<IActionResult> DeleteToken([FromBody]string tokenValue)
         {
             var result = await _tokenService.DeleteToken(tokenValue);
 

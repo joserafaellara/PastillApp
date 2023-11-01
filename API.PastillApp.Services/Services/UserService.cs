@@ -131,6 +131,7 @@ namespace API.PastillApp.Services.Services
                         }
 
                         await _userRepository.UpdateRequest(request.EmergencyRequestId, request.Accept);
+                        await _userRepository.DeleteEmergencyRequest(request.EmergencyRequestId);
                     }
                     else
                     {
@@ -194,7 +195,7 @@ namespace API.PastillApp.Services.Services
                     }
                     else
                     {
-                        string body = user.Name + " " + user.LastName + " necesita ayuda con urgencia!!";
+                        string body = user.Name + " " + user.LastName + " necesita ayuda. Por Favor Comunicate de manera URGENTE";
 
                         // Enviar el mensaje de emergencia a todos los tokens asociados al contacto de emergencia
                         foreach (var emergencyContactToken in emergencyContactTokens)
