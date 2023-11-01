@@ -172,7 +172,7 @@ namespace API.PastillApp.Repositories
             try
             {
                 return await _context.ReminderLogs
-                    .Where(rl => rl.Taken == false)
+                    .Where(rl => rl.Taken == false & rl.Notificated == false)
                     .Include(rl => rl.Reminder)
                     .OrderBy(rl=> rl.DateTime)
                     .ToListAsync();
@@ -189,7 +189,7 @@ namespace API.PastillApp.Repositories
             try
             {
                 return await _context.ReminderLogs
-                    .Where(rl => rl.Taken == false & rl.Notificated == true)
+                    .Where(rl => rl.Taken == false & rl.Notificated == true & rl.SecondNotification == false)
                     .Include(rl => rl.Reminder)
                     .OrderBy(rl => rl.DateTime)
                     .ToListAsync();
@@ -206,7 +206,7 @@ namespace API.PastillApp.Repositories
             try
             {
                 return await _context.ReminderLogs
-                    .Where(rl => rl.Taken == false & rl.SecondNotification == true)
+                    .Where(rl => rl.Taken == false & rl.SecondNotification == true & rl.EmergencyNotification == false)
                     .Include(rl => rl.Reminder)
                     .OrderBy(rl => rl.DateTime)
                     .ToListAsync();
