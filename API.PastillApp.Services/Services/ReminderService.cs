@@ -161,6 +161,14 @@ namespace API.PastillApp.Services.Services
 
                 if (reminder.DateTimeStart.HasValue)
                 {
+                    if (reminder.DateTimeStart < DateTime.Now)
+                    {
+                        return new ResponseDTO
+                        {
+                            isSuccess = false,
+                            message = "La fecha no puede ser menor a la actual",
+                        };
+                    }
                     reminderToUpdate.DateTimeStart = (DateTime)reminder.DateTimeStart;
                 }
                
