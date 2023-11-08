@@ -218,7 +218,7 @@ namespace API.PastillApp.Services.Services
                 return new ResponseDTO
                 {
                     isSuccess = false,
-                    message = "Error al actualizar el recordatorio",
+                    message = "Error al actualizar el recordatorio : " + ex.Message,
                 };
             }
         }
