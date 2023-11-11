@@ -118,5 +118,19 @@ namespace API.PastillApp.Controllers
                 return BadRequest($"Error al obtener el estado diario por fecha y ID: {ex.Message}");
             }
         }
+
+        [HttpPut("updateStatus/{userId}")]
+        public async Task<IActionResult> UpdateStatus(int userId, [FromBody] UpdateDailyStatusDTO updateDailyStatusDTO)
+        {
+            var response = await _dailyStatusService.UpdateStatus(userId, updateDailyStatusDTO);
+
+            if (response.isSuccess)
+            {
+                return Ok(response);
+            }
+
+            Console.WriteLine($"Error en la actualización del estado diario para el usuario {userId}. Mensaje: {response.message}");
+            return BadRequest(response);
+        }
     }
 }

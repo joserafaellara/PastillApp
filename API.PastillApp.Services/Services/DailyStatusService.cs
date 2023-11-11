@@ -172,5 +172,61 @@ namespace API.PastillApp.Services.Services
                 throw;
             }
         }
+        public async Task<ResponseDTO> UpdateStatus(int userId, UpdateDailyStatusDTO updateDailyStatusDTO)
+        {
+            try
+            {
+                // Obtén el estado diario por la fecha actual y el ID de usuario
+                var currentDate = DateTime.Now.Date;
+                var dailyStatus = await _dailyStatusRepository.GetDailyStatusByDateAndID(userId, currentDate);
+
+                // Si no existe un estado diario para la fecha actual, crea uno nuevo
+                if (dailyStatus == null)
+                {
+                    var newDailyStatus = new DailyStatus
+                    {
+                        UserId = userId,
+                        Date = currentDate,
+                        Symptoms = updateDailyStatusDTO.Symptoms,
+                        Observation = updateDailyStatusDTO.Observation
+                    };
+
+                    await _dailyStatusRepository.AddDailyStatus(newDailyStatus);
+
+                    return new ResponseDTO
+                    {
+                        isSuccess = true,
+                        message = "Estado diario creado y actualizado con éxito",
+                    };
+                }
+
+                // Actualiza el estado diario con la información proporcionada
+                if (!string.IsNullOrWhiteSpace(updateDailyStatusDTO.Symptoms))
+                {
+                    dailyStatus.Symptoms = updateDailyStatusDTO.Symptoms;
+                }
+
+                dailyStatus.Observation = updateDailyStatusDTO.Observation;
+
+
+                await _dailyStatusRepository.UpdateDailyStatus(dailyStatus);
+
+                return new ResponseDTO
+                {
+                    isSuccess = true,
+                    message = "Estado diario actualizado con éxito",
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al actualizar el estado diario: {ex.Message}");
+                return new ResponseDTO
+                {
+                    isSuccess = false,
+                    message = "Error al actualizar el estado diario",
+                };
+            }
+        }
+
     }
 }
