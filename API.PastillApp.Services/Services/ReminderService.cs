@@ -293,7 +293,7 @@ namespace API.PastillApp.Services.Services
              .Select(u => u.Email)
              .FirstOrDefaultAsync();
 
-            await SendAlarm(mail);
+            await SendAlarm(mail, reminderlog.Reminder.Medicine.Name);
 
             if(reminderlog.Notificated == true)
                 reminderlog.SecondNotification = true;
@@ -311,15 +311,15 @@ namespace API.PastillApp.Services.Services
              .FirstOrDefaultAsync();
 
             if (user.EmergencyUser == null)
-                await SendAlarm(user.Email);
+                await SendAlarm(user.Email, reminderlog.Reminder.Medicine.Name);
             else    
-                await SendEmergencyAlarm(user.EmergencyUser.Email, (user.Name + " " + user.LastName));
+                await SendEmergencyAlarm(user.EmergencyUser.Email, (user.Name + " " + user.LastName), reminderlog.Reminder.Medicine.Name);
 
             reminderlog.EmergencyNotification = true;
             await _reminderLogsRepository.UpdateReminderLog(reminderlog);
         }
 
-        private async Task SendAlarm(string mail)
+        private async Task SendAlarm(string mail, string medicina)
         {
             try
             {
@@ -332,7 +332,7 @@ namespace API.PastillApp.Services.Services
 
                 foreach (var token in tokens)
                 {
-                    var result = await _tokenService.SendMessage("ALARM", "Hora de tomar tu medicamento", token.DeviceToken);
+                    var result = await _tokenService.SendMessage("ALARM", $"Hora de tomar {medicina}", token.DeviceToken);
                 }
             }
             catch (Exception ex)
@@ -342,7 +342,7 @@ namespace API.PastillApp.Services.Services
             }
         }
 
-        private async Task SendEmergencyAlarm(string mail, string userName)
+        private async Task SendEmergencyAlarm(string mail, string userName, string medicina)
         {
             try
             {
@@ -355,7 +355,7 @@ namespace API.PastillApp.Services.Services
 
                 foreach (var token in tokens)
                 {
-                    var result = await _tokenService.SendMessage("EMERGENCY", $"{userName} no se ha tomado su medicamento", token.DeviceToken);
+                    var result = await _tokenService.SendMessage("EMERGENCY", $"{userName} no se ha tomado su {medicina}", token.DeviceToken);
                 }
             }
             catch (Exception ex)
