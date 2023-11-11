@@ -169,6 +169,7 @@ namespace API.PastillApp.Repositories
                 return await _context.ReminderLogs
                     .Where(rl => rl.Taken == false & rl.Notificated == false)
                     .Include(rl => rl.Reminder)
+                    .ThenInclude(r => r.Medicine)
                     .OrderBy(rl=> rl.DateTime)
                     .ToListAsync();
             }
@@ -222,6 +223,7 @@ namespace API.PastillApp.Repositories
                     .Where(rl => rl.Reminder.UserId == userId && rl.DateTime.Date == today)
                     .Include(rl => rl.Reminder)
                     .Include(rl => rl.Reminder.Medicine)
+                    .OrderBy(rl => rl.DateTime)
                     .ToListAsync();
             }
             catch (Exception ex)
