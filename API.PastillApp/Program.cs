@@ -6,18 +6,13 @@ using API.PastillApp.Services.Mapper;
 using API.PastillApp.Services.Services;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
-using Microsoft.AspNetCore.Builder.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 
      var firebase = FirebaseApp.Create(new AppOptions
     {
@@ -30,7 +25,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<PastillAppContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("PastillAppCS"));
-    //options.UseInMemoryDatabase("PastillAppDB");
 }
     );
 builder.Services.AddHostedService<PastillAppWorker>();
@@ -58,17 +52,18 @@ builder.Services
 #endregion
 
 
-//builder.Services.AddScoped<PastillAppWorker>();
-
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<PastillAppContext>();
     context.Database.Migrate();
+    if (!context.Medicines.Any())
+    {
+        await MedicalInitializer.Initialize(context);
+    }
 }
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
