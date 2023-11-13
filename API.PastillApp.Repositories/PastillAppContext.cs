@@ -1,19 +1,11 @@
 ﻿using API.PastillApp.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace API.PastillApp.Repositories
 {
     public class PastillAppContext :  DbContext
     {
-        public PastillAppContext(DbContextOptions options) : base(options) 
-        {
-            
-        }
+        public PastillAppContext(DbContextOptions options) : base(options) {}
         public DbSet<AlertLog> AlertLogs { get; set; }
         public DbSet<DailyStatus> DailyStatuses { get; set; }
         public DbSet<Medicine> Medicines { get; set; }
