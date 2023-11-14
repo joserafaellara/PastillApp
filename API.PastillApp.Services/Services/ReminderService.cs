@@ -49,6 +49,7 @@ namespace API.PastillApp.Services.Services
                 var newReminder = _mapper.Map<Reminder>(createReminder);
 
                 newReminder.EndDateTime = dateExpired;
+                newReminder.IsActive = true;
 
                 await _reminderRepository.AddReminder(newReminder);
 
@@ -361,7 +362,6 @@ namespace API.PastillApp.Services.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"Error al enviar la alarma de emergencia: {ex.Message}");
-                throw;
             }
         }
 

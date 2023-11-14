@@ -18,6 +18,7 @@ namespace API.PastillApp
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            await WaitForNextMinute();
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
@@ -37,6 +38,15 @@ namespace API.PastillApp
             }
         }
 
+        private async Task WaitForNextMinute()
+        {
+            var now = DateTime.Now;
+            var nextMinute = now.AddMinutes(1).AddSeconds(-now.Second).AddMilliseconds(-now.Millisecond);
+
+            var delay = nextMinute - now;
+
+            await Task.Delay(delay);
+        }
         private async Task ProcessSendNotification(IReminderLogsRepository reminderLogsRepository, IReminderService reminderService)
         {
             List<ReminderLog> reminderLogs = reminderLogsRepository.GetReminderLogsNoTaken().Result;

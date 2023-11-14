@@ -20,7 +20,7 @@ namespace API.PastillApp.Repositories
             _context = context;
         }
 
-        // CREATE (Add a new Reminder)
+        // CREATE (Add a new Reminder) 
         public async Task AddReminder(Reminder reminder)
         {
             try
@@ -41,8 +41,8 @@ namespace API.PastillApp.Repositories
             try
             {
                 return await _context.Reminders
-                    .Where(r => r.ReminderId == reminderId)
-                    .Include(r => r.Medicine)
+                    .Where(r => r.ReminderId == reminderId && r.IsActive)
+                    .Include(r => r.Medicine )
                     .FirstOrDefaultAsync();
             }
             catch (Exception ex)
@@ -59,7 +59,7 @@ namespace API.PastillApp.Repositories
         {
             try
             {
-                return await _context.Reminders.FirstOrDefaultAsync(r => r.MedicineId == medicineId);
+                return await _context.Reminders.FirstOrDefaultAsync(r => r.MedicineId == medicineId && r.IsActive);
             }
             catch (Exception ex)
             {
@@ -75,7 +75,7 @@ namespace API.PastillApp.Repositories
             try
             {
                 return await _context.Reminders
-                    .Where(r => r.UserId == userId)
+                    .Where(r => r.UserId == userId && r.IsActive)
                     .Include(r => r.Medicine)
                     .ToListAsync();
             }
@@ -122,7 +122,8 @@ namespace API.PastillApp.Repositories
 
             if (reminder != null)
             {
-                _context.Reminders.Remove(reminder);
+                reminder.IsActive = false;
+                _context.Reminders.Update(reminder);
                 await _context.SaveChangesAsync();
             }
             else
@@ -140,7 +141,7 @@ namespace API.PastillApp.Repositories
         public async Task<List<Reminder>> GetActiveRemindersByUserId(int userId, DateTime today)
         {
             return await _context.Reminders
-                .Where(r => r.UserId == userId && r.EndDateTime >= today)
+                .Where(r => r.UserId == userId && r.EndDateTime >= today && r.IsActive)
                 .ToListAsync();
         }
     }
