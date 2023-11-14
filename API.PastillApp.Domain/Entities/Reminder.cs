@@ -52,6 +52,8 @@ namespace API.PastillApp.Domain.Entities
 
         public DateTime? EndDateTime { get; set; }
 
+        public bool IsActive { get; set; }
+
         public virtual User? User { get; set; }
         public virtual Medicine? Medicine{ get; set; }
 
