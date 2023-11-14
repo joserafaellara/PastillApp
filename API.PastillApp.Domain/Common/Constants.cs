@@ -6,7 +6,7 @@
         public const string Day = "DAY";
         public const string Week = "WEEK";
         public const string Month = "MONTH";
-        public const string Unlimited = "UNLIMITED";
+        public const string Year = "YEAR";
 
     }
 }

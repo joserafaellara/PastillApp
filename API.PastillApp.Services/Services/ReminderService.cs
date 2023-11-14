@@ -162,14 +162,6 @@ namespace API.PastillApp.Services.Services
 
                 if (reminder.DateTimeStart.HasValue)
                 {
-                    if (reminder.DateTimeStart < DateTime.Now)
-                    {
-                        return new ResponseDTO
-                        {
-                            isSuccess = false,
-                            message = "La fecha no puede ser menor a la actual",
-                        };
-                    }
                     reminderToUpdate.DateTimeStart = (DateTime)reminder.DateTimeStart;
                 }
                
@@ -372,17 +364,20 @@ namespace API.PastillApp.Services.Services
 
             while (currentDateTime < dateExpired)
             {
-                reminderLogs.Add(new ReminderLog
+           
+                if(currentDateTime > DateTime.Now)
                 {
-                    ReminderId = reminderId,
-                    DateTime = currentDateTime,
-                    Taken = false,
-                    Notificated = false,
-                    SecondNotification = false,
-                    EmergencyNotification = false
-                    
-                });
+                    reminderLogs.Add(new ReminderLog
+                    {
+                        ReminderId = reminderId,
+                        DateTime = currentDateTime,
+                        Taken = false,
+                        Notificated = false,
+                        SecondNotification = false,
+                        EmergencyNotification = false
 
+                    });
+                }
                 currentDateTime = currentDateTime.Add(frecuency);
             }
            
@@ -435,8 +430,8 @@ namespace API.PastillApp.Services.Services
                 case Constants.Month:
                     endDate = dateTimeStart.AddMonths(durationValue);
                     break;
-                case Constants.Unlimited:
-                    endDate = dateTimeStart.AddDays(365);
+                case Constants.Year:
+                    endDate = dateTimeStart.AddDays(365*durationValue);
                     break;
                 default:
                     throw new ArgumentException("Tipo de duración no válido.", nameof(durationType));
