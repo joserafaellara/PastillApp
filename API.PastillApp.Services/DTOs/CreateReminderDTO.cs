@@ -14,7 +14,7 @@ namespace API.PastillApp.Services.DTOs
 
         public int MedicineId { get; set; }
 
-        public int Quantity { get; set; }
+        public double Quantity { get; set; }
 
         public string? Presentation { get; set; }
 

@@ -331,7 +331,6 @@ namespace API.PastillApp.Services.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"Error al enviar la alarma: {ex.Message}");
-                throw;
             }
         }
 

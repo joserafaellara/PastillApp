@@ -70,7 +70,7 @@ namespace API.PastillApp
             foreach (var reminderLog in reminderLogs)
             {
                 DateTime reminderDate = reminderLog.DateTime;
-                DateTime MinutesLater = reminderDate.AddMinutes(10);
+                DateTime MinutesLater = reminderDate.AddMinutes(1);
 
                 if (DateTime.Now >= MinutesLater)
                 {
@@ -86,7 +86,7 @@ namespace API.PastillApp
             foreach (var reminderLog in reminderLogs)
             {
                 DateTime reminderDate = reminderLog.DateTime;
-                DateTime MinutesLater = reminderDate.AddMinutes(30);
+                DateTime MinutesLater = reminderDate.AddMinutes(3);
 
                 if (DateTime.Now >= MinutesLater)
                 {
