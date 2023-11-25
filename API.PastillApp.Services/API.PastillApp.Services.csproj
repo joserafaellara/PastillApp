@@ -7,7 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\" />
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="FirebaseAdmin" Version="2.4.0" />
+    <PackageReference Include="System.Threading.Tasks.Dataflow" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\API.PastillApp.Domain\API.PastillApp.Domain.csproj" />
+    <ProjectReference Include="..\API.PastillApp.Repositories\API.PastillApp.Repositories.csproj" />
   </ItemGroup>
 
 </Project>
