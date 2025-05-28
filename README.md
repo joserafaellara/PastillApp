@@ -39,5 +39,5 @@ El servicio de trabajador (WorkerService) maneja las notificaciones de medicamen
 
 ## Equipo
 Estudiantes del Instituto ORT Argentina, en la carrera de Analistas en Sistemas:
-Agustina Boto, Joaquin Herreros, Tomas Guerchicoff Adamo, Camila Szesko, Camila Ingberg,
+Agustina Boto, Joaquin Herreros, Tomas, Camila Szesko, Camila Ingberg,
 Francisco Veron, Paola Quinonez, Federico Marty, Patricia Berkovics, Pia Potasznik, Jose Lara
